@@ -9,12 +9,16 @@ export function StatCard({
   changePercent: number | null;
 }) {
   return (
-    <div>
-      <p className="text-sm text-gray-500">{label}</p>
+    <div className="rounded-[10px] border border-gray-200 bg-white p-3.5">
+      <p className="text-[10.5px] font-semibold uppercase tracking-wide text-gray-400">
+        {label}
+      </p>
       <div className="mt-1 flex flex-wrap items-baseline gap-2">
-        <p className="text-2xl font-bold text-gray-900">{value}</p>
-        {changePercent !== null && <ChangeBadge value={changePercent} />}
+        <p className="font-mono text-[17px] font-semibold text-gray-900">
+          {value}
+        </p>
       </div>
+      {changePercent !== null && <ChangeBadge value={changePercent} />}
     </div>
   );
 }
@@ -25,8 +29,8 @@ function ChangeBadge({ value }: { value: number }) {
 
   return (
     <span
-      className={`inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-xs font-medium ${
-        isPositive ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
+      className={`mt-1.5 inline-flex items-center gap-0.5 rounded-[5px] px-1.5 py-0.5 text-[10.5px] font-bold ${
+        isPositive ? "bg-good-soft text-good" : "bg-danger-soft text-danger"
       }`}
     >
       {isPositive ? "▲" : "▼"} {rounded}%

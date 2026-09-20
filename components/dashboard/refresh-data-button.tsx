@@ -27,10 +27,10 @@ export function RefreshDataButton() {
         disabled={status === "loading"}
         className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {status === "loading" ? "Syncing…" : "Refresh data"}
+        {status === "loading" ? "Menyinkron…" : "Segarkan Data"}
       </button>
       {status === "error" && (
-        <span className="text-xs text-red-600">Sync failed. Try again.</span>
+        <span className="text-xs text-danger">Sinkronisasi gagal. Coba lagi.</span>
       )}
     </div>
   );

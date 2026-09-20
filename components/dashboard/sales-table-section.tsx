@@ -7,15 +7,15 @@ export function SalesTableSection({ data }: { data: SalesOverview }) {
   const hasData = data.recent.length > 0;
 
   return (
-    <Card title="Recent sales">
+    <Card title="Penjualan Terbaru">
       {hasData ? (
         <div className="overflow-x-auto">
           <table className="w-full min-w-[480px] text-left text-sm">
             <thead>
               <tr className="border-b border-gray-200 text-xs uppercase tracking-wide text-gray-400">
-                <th className="py-2 pr-3 font-medium">Date</th>
+                <th className="py-2 pr-3 font-medium">Tanggal</th>
                 <th className="py-2 pr-3 font-medium">Order</th>
-                <th className="py-2 pr-3 font-medium">Product</th>
+                <th className="py-2 pr-3 font-medium">Produk</th>
                 <th className="py-2 pr-3 font-medium">Channel</th>
                 <th className="py-2 pl-3 text-right font-medium">Total</th>
               </tr>
@@ -38,7 +38,7 @@ export function SalesTableSection({ data }: { data: SalesOverview }) {
           </table>
         </div>
       ) : (
-        <EmptyState message="No sales recorded for this period yet." />
+        <EmptyState message="Belum ada penjualan pada periode ini." />
       )}
     </Card>
   );

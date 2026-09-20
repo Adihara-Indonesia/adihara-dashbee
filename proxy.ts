@@ -7,6 +7,12 @@ import type { Database } from "@/types/database";
 // covers the whole app/(dashboard) tree, present and future, without
 // needing to keep this list of protected paths in sync by hand.
 export async function proxy(request: NextRequest) {
+  // The marketing homepage is public — everything else (guarded by the
+  // matcher below) requires auth.
+  if (request.nextUrl.pathname === "/") {
+    return NextResponse.next();
+  }
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient<Database>(

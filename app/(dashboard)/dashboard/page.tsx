@@ -1,12 +1,14 @@
 import { createClient } from "@/lib/supabase/server";
 import { PeriodFilter } from "@/components/dashboard/period-filter";
 import { RefreshDataButton } from "@/components/dashboard/refresh-data-button";
+import { BusinessSummarySection } from "@/components/dashboard/business-summary-section";
 import { SalesChartSection } from "@/components/dashboard/sales-chart-section";
 import { SalesTableSection } from "@/components/dashboard/sales-table-section";
 import { PurchasesSection } from "@/components/dashboard/purchases-section";
 import { StockOpnameSection } from "@/components/dashboard/stock-opname-section";
 import { getPeriodRange, isPeriod, type Period } from "@/lib/dashboard/period";
 import {
+  getBusinessSummary,
   getPurchasesOverview,
   getSalesOverview,
   getStockOpnameOverview,
@@ -23,7 +25,8 @@ export default async function DashboardHome({
 
   const supabase = await createClient();
 
-  const [sales, purchases, stockOpname] = await Promise.all([
+  const [summary, sales, purchases, stockOpname] = await Promise.all([
+    getBusinessSummary(supabase),
     getSalesOverview(supabase, range),
     getPurchasesOverview(supabase, range),
     getStockOpnameOverview(supabase, range),
@@ -33,15 +36,29 @@ export default async function DashboardHome({
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
       {error === "not_authorized" && (
         <div
-          className="mb-6 rounded-md bg-red-50 px-4 py-3 text-sm text-red-700"
+          className="mb-6 rounded-md bg-danger-soft px-4 py-3 text-sm text-danger"
           role="alert"
         >
-          You don&apos;t have access to that page.
+          Anda tidak memiliki akses ke halaman tersebut.
         </div>
       )}
 
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold text-gray-900">Overview</h1>
+      <div className="mb-6">
+        <h1 className="font-serif text-xl font-semibold text-gray-900">
+          Dashboard
+        </h1>
+        <p className="mt-1 text-sm text-gray-500">
+          Ringkasan bisnis — data menyeluruh (bukan berdasarkan filter periode
+          di bawah).
+        </p>
+      </div>
+
+      <div className="mb-8">
+        <BusinessSummarySection data={summary} />
+      </div>
+
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <h2 className="text-base font-bold text-gray-900">Aktivitas Terbaru</h2>
         <div className="flex flex-wrap items-center gap-3">
           <PeriodFilter current={period} />
           <RefreshDataButton />

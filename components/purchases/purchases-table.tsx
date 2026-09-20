@@ -17,8 +17,8 @@ export function PurchasesTable({
 }) {
   if (rows.length === 0) {
     return (
-      <div className="flex h-32 items-center justify-center rounded-md border border-dashed border-gray-200 text-sm text-gray-400">
-        No purchases found.
+      <div className="flex h-32 items-center justify-center rounded-[10px] border border-dashed border-gray-200 text-sm text-gray-400">
+        Belum ada produk.
       </div>
     );
   }
@@ -28,22 +28,22 @@ export function PurchasesTable({
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200">
+    <div className="overflow-x-auto rounded-[10px] border border-gray-200">
       <table className="w-full min-w-[720px] text-left text-sm">
         <thead className="bg-gray-50">
           <tr className="text-xs uppercase tracking-wide text-gray-400">
-            <th className="px-4 py-3 font-medium">Date</th>
-            <th className="px-4 py-3 font-medium">Product</th>
-            <th className="px-4 py-3 font-medium">Category</th>
-            <th className="px-4 py-3 text-right font-medium">Stock qty</th>
-            <th className="px-4 py-3 text-right font-medium">Cost value</th>
-            <th className="px-4 py-3 text-right font-medium">Actions</th>
+            <th className="px-4 py-3 font-medium">Tanggal</th>
+            <th className="px-4 py-3 font-medium">Produk</th>
+            <th className="px-4 py-3 font-medium">Kategori</th>
+            <th className="px-4 py-3 text-right font-medium">Stok Awal</th>
+            <th className="px-4 py-3 text-right font-medium">Nilai HPP</th>
+            <th className="px-4 py-3 text-right font-medium">Aksi</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">
           {rows.map((row) => (
             <tr key={row.id}>
-              <td className="px-4 py-3 whitespace-nowrap text-gray-500">
+              <td className="px-4 py-3 whitespace-nowrap text-gray-500 font-mono">
                 {formatDateShort(row.purchase_date)}
               </td>
               <td className="px-4 py-3 text-gray-900">
@@ -57,10 +57,10 @@ export function PurchasesTable({
               <td className="px-4 py-3 whitespace-nowrap text-gray-500">
                 {row.category ?? "—"}
               </td>
-              <td className="px-4 py-3 text-right text-gray-900">
+              <td className="px-4 py-3 text-right font-mono text-gray-900">
                 {row.initial_stock}
               </td>
-              <td className="px-4 py-3 text-right font-medium text-gray-900">
+              <td className="px-4 py-3 text-right font-mono font-medium text-gray-900">
                 {formatCurrency(row.initial_stock * row.unit_cost)}
               </td>
               <td className="px-4 py-3 text-right whitespace-nowrap">
@@ -68,15 +68,15 @@ export function PurchasesTable({
                   <div className="flex justify-end gap-3">
                     <Link
                       href={editHrefFor(row.id)}
-                      className="font-medium text-blue-600 hover:underline"
+                      className="font-medium text-honey-deep hover:underline"
                     >
                       Edit
                     </Link>
                     <Link
                       href={deleteHrefFor(row.id)}
-                      className="font-medium text-red-600 hover:underline"
+                      className="font-medium text-danger hover:underline"
                     >
-                      Delete
+                      Hapus
                     </Link>
                   </div>
                 ) : (

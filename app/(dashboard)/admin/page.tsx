@@ -23,7 +23,7 @@ export default async function AdminPage() {
 
   // Enforced here, server-side — not just by hiding the nav link.
   if (myProfile?.role !== "owner" && myProfile?.role !== "admin") {
-    redirect("/?error=not_authorized");
+    redirect("/dashboard?error=not_authorized");
   }
 
   const [{ data: profiles }, emailById, { data: businessInfo }] =
@@ -38,16 +38,16 @@ export default async function AdminPage() {
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
-      <h1 className="text-xl font-semibold text-gray-900">Admin</h1>
+      <h1 className="font-serif text-xl font-semibold text-gray-900">Admin</h1>
 
-      <Card title="User roles">
-        <div className="overflow-x-auto rounded-lg border border-gray-200">
+      <Card title="Peran Pengguna">
+        <div className="overflow-x-auto rounded-[10px] border border-gray-200">
           <table className="w-full min-w-[480px] text-left text-sm">
             <thead className="bg-gray-50">
               <tr className="text-xs uppercase tracking-wide text-gray-400">
-                <th className="px-4 py-3 font-medium">Name</th>
+                <th className="px-4 py-3 font-medium">Nama</th>
                 <th className="px-4 py-3 font-medium">Email</th>
-                <th className="px-4 py-3 font-medium">Role</th>
+                <th className="px-4 py-3 font-medium">Peran</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">

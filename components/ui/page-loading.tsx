@@ -7,7 +7,7 @@ export function PageLoading({ cards = 2 }: { cards?: number }) {
           {Array.from({ length: cards }).map((_, i) => (
             <div
               key={i}
-              className="h-64 rounded-lg bg-white p-6 ring-1 ring-gray-200"
+              className="h-64 rounded-[10px] border border-gray-200 bg-white p-6"
             >
               <div className="h-4 w-1/3 rounded bg-gray-200" />
               <div className="mt-4 h-8 w-1/2 rounded bg-gray-200" />

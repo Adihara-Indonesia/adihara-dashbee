@@ -6,68 +6,68 @@ import { createClient } from "@/lib/supabase/server";
 import type { TablesInsert, TablesUpdate } from "@/types/database";
 import type { DeleteFormState } from "@/components/crud/confirm-delete-modal";
 
-export type PurchaseFormState = {
+export type StockOpnameFormState = {
   error?: string;
   fieldErrors?: Record<string, string>;
 };
 
 function safeReturnTo(formData: FormData): string {
   const value = String(formData.get("returnTo") ?? "");
-  return value.startsWith("/purchases") ? value : "/purchases";
+  return value.startsWith("/stok-opname") ? value : "/stok-opname";
 }
 
-function parsePurchaseForm(formData: FormData) {
+function parseStockOpnameForm(formData: FormData) {
   const fieldErrors: Record<string, string> = {};
 
-  const purchase_date = String(formData.get("purchase_date") ?? "");
-  if (!purchase_date) fieldErrors.purchase_date = "Date is required.";
+  const count_date = String(formData.get("count_date") ?? "");
+  if (!count_date) fieldErrors.count_date = "Tanggal wajib diisi.";
 
   const product_code = String(formData.get("product_code") ?? "").trim();
-  if (!product_code) fieldErrors.product_code = "Product code is required.";
+  if (!product_code) fieldErrors.product_code = "Kode produk wajib diisi.";
 
   const product_name = String(formData.get("product_name") ?? "").trim();
-  if (!product_name) fieldErrors.product_name = "Product name is required.";
+  if (!product_name) fieldErrors.product_name = "Nama produk wajib diisi.";
 
   const initial_stock = Number(formData.get("initial_stock"));
   if (!Number.isFinite(initial_stock) || initial_stock < 0) {
-    fieldErrors.initial_stock = "Stock quantity must be 0 or more.";
+    fieldErrors.initial_stock = "Stok awal harus 0 atau lebih.";
   }
 
-  const unit_cost = Number(formData.get("unit_cost"));
-  if (!Number.isFinite(unit_cost) || unit_cost < 0) {
-    fieldErrors.unit_cost = "Unit cost must be 0 or more.";
+  const total_sold = Number(formData.get("total_sold"));
+  if (!Number.isFinite(total_sold) || total_sold < 0) {
+    fieldErrors.total_sold = "Total terjual harus 0 atau lebih.";
   }
 
-  const sell_price = Number(formData.get("sell_price"));
-  if (!Number.isFinite(sell_price) || sell_price < 0) {
-    fieldErrors.sell_price = "Sell price must be 0 or more.";
+  const physical_stock = Number(formData.get("physical_stock"));
+  if (!Number.isFinite(physical_stock) || physical_stock < 0) {
+    fieldErrors.physical_stock = "Stok fisik harus 0 atau lebih.";
   }
 
-  const category = String(formData.get("category") ?? "").trim() || null;
   const color = String(formData.get("color") ?? "").trim() || null;
   const size = String(formData.get("size") ?? "").trim() || null;
+  const notes = String(formData.get("notes") ?? "").trim() || null;
 
   return {
     fieldErrors,
     values: {
-      purchase_date,
+      count_date,
       product_code,
       product_name,
-      category,
       color,
       size,
       initial_stock,
-      unit_cost,
-      sell_price,
+      total_sold,
+      physical_stock,
+      notes,
     },
   };
 }
 
-export async function savePurchaseAction(
-  _prevState: PurchaseFormState,
+export async function saveStockOpnameAction(
+  _prevState: StockOpnameFormState,
   formData: FormData,
-): Promise<PurchaseFormState> {
-  const { fieldErrors, values } = parsePurchaseForm(formData);
+): Promise<StockOpnameFormState> {
+  const { fieldErrors, values } = parseStockOpnameForm(formData);
   if (Object.keys(fieldErrors).length > 0) {
     return { fieldErrors };
   }
@@ -77,36 +77,36 @@ export async function savePurchaseAction(
   const supabase = await createClient();
 
   if (id) {
-    const update: TablesUpdate<"purchases"> = values;
+    const update: TablesUpdate<"stock_opname"> = values;
     const { data, error } = await supabase
-      .from("purchases")
+      .from("stock_opname")
       .update(update)
       .eq("id", id)
       .select("id");
 
     if (error) return { error: error.message };
     if (!data || data.length === 0) {
-      return { error: "You don't have permission to edit this row." };
+      return { error: "Anda tidak memiliki izin untuk mengubah data ini." };
     }
   } else {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user) return { error: "Not signed in." };
+    if (!user) return { error: "Anda belum masuk (sign in)." };
 
-    const insert: TablesInsert<"purchases"> = {
+    const insert: TablesInsert<"stock_opname"> = {
       ...values,
       created_by: user.id,
     };
-    const { error } = await supabase.from("purchases").insert(insert);
+    const { error } = await supabase.from("stock_opname").insert(insert);
     if (error) return { error: error.message };
   }
 
-  revalidatePath("/purchases");
+  revalidatePath("/stok-opname");
   redirect(returnTo);
 }
 
-export async function deletePurchaseAction(
+export async function deleteStockOpnameAction(
   _prevState: DeleteFormState,
   formData: FormData,
 ): Promise<DeleteFormState> {
@@ -115,16 +115,16 @@ export async function deletePurchaseAction(
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from("purchases")
+    .from("stock_opname")
     .delete()
     .eq("id", id)
     .select("id");
 
   if (error) return { error: error.message };
   if (!data || data.length === 0) {
-    return { error: "You don't have permission to delete this row." };
+    return { error: "Anda tidak memiliki izin untuk menghapus data ini." };
   }
 
-  revalidatePath("/purchases");
+  revalidatePath("/stok-opname");
   redirect(returnTo);
 }

@@ -46,7 +46,7 @@ export function Toast({
     <div
       role="status"
       className={`fixed bottom-4 right-4 z-50 rounded-lg px-4 py-3 text-sm font-medium shadow-lg ${
-        message.type === "success" ? "bg-green-600 text-white" : "bg-red-600 text-white"
+        message.type === "success" ? "bg-good text-white" : "bg-danger text-white"
       }`}
     >
       {message.text}

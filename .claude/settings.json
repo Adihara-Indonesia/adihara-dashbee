@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -o \"Jadwalkan demo gratis\" /tmp/home.html | wc -l *)",
+      "Read(//tmp/**)",
+      "Bash(npx supabase *)",
+      "Bash(node -e ' *)",
+      "Bash(node \"C:/Users/arung/AppData/Local/Temp/claude/c--Projects-adihara-web-services-adihara-dashbee/84a3dd32-0060-43d6-abb8-99db2a0beb73/scratchpad/check-sheet.js\")",
+      "Bash(node \"C:/Users/arung/AppData/Local/Temp/claude/c--Projects-adihara-web-services-adihara-dashbee/84a3dd32-0060-43d6-abb8-99db2a0beb73/scratchpad/reproduce-sync.js\")"
+    ]
+  }
+}

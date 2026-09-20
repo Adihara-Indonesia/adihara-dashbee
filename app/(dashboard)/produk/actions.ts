@@ -6,74 +6,68 @@ import { createClient } from "@/lib/supabase/server";
 import type { TablesInsert, TablesUpdate } from "@/types/database";
 import type { DeleteFormState } from "@/components/crud/confirm-delete-modal";
 
-export type SaleFormState = {
+export type PurchaseFormState = {
   error?: string;
   fieldErrors?: Record<string, string>;
 };
 
 function safeReturnTo(formData: FormData): string {
   const value = String(formData.get("returnTo") ?? "");
-  return value.startsWith("/sales") ? value : "/sales";
+  return value.startsWith("/produk") ? value : "/produk";
 }
 
-function parseSaleForm(formData: FormData) {
+function parsePurchaseForm(formData: FormData) {
   const fieldErrors: Record<string, string> = {};
 
-  const sale_date = String(formData.get("sale_date") ?? "");
-  if (!sale_date) fieldErrors.sale_date = "Date is required.";
-
-  const order_no = String(formData.get("order_no") ?? "").trim();
-  if (!order_no) fieldErrors.order_no = "Order number is required.";
-
-  const sales_channel = String(formData.get("sales_channel") ?? "").trim();
-  if (!sales_channel) fieldErrors.sales_channel = "Sales channel is required.";
+  const purchase_date = String(formData.get("purchase_date") ?? "");
+  if (!purchase_date) fieldErrors.purchase_date = "Tanggal wajib diisi.";
 
   const product_code = String(formData.get("product_code") ?? "").trim();
-  if (!product_code) fieldErrors.product_code = "Product code is required.";
+  if (!product_code) fieldErrors.product_code = "Kode produk wajib diisi.";
 
   const product_name = String(formData.get("product_name") ?? "").trim();
-  if (!product_name) fieldErrors.product_name = "Product name is required.";
+  if (!product_name) fieldErrors.product_name = "Nama produk wajib diisi.";
 
-  const quantity = Number(formData.get("quantity"));
-  if (!Number.isFinite(quantity) || quantity <= 0) {
-    fieldErrors.quantity = "Quantity must be greater than 0.";
-  }
-
-  const unit_price = Number(formData.get("unit_price"));
-  if (!Number.isFinite(unit_price) || unit_price < 0) {
-    fieldErrors.unit_price = "Unit price must be 0 or more.";
+  const initial_stock = Number(formData.get("initial_stock"));
+  if (!Number.isFinite(initial_stock) || initial_stock < 0) {
+    fieldErrors.initial_stock = "Stok awal harus 0 atau lebih.";
   }
 
   const unit_cost = Number(formData.get("unit_cost"));
   if (!Number.isFinite(unit_cost) || unit_cost < 0) {
-    fieldErrors.unit_cost = "Unit cost must be 0 or more.";
+    fieldErrors.unit_cost = "Harga beli (HPP) harus 0 atau lebih.";
   }
 
+  const sell_price = Number(formData.get("sell_price"));
+  if (!Number.isFinite(sell_price) || sell_price < 0) {
+    fieldErrors.sell_price = "Harga jual harus 0 atau lebih.";
+  }
+
+  const category = String(formData.get("category") ?? "").trim() || null;
   const color = String(formData.get("color") ?? "").trim() || null;
   const size = String(formData.get("size") ?? "").trim() || null;
 
   return {
     fieldErrors,
     values: {
-      sale_date,
-      order_no,
-      sales_channel,
+      purchase_date,
       product_code,
       product_name,
+      category,
       color,
       size,
-      quantity,
-      unit_price,
+      initial_stock,
       unit_cost,
+      sell_price,
     },
   };
 }
 
-export async function saveSaleAction(
-  _prevState: SaleFormState,
+export async function savePurchaseAction(
+  _prevState: PurchaseFormState,
   formData: FormData,
-): Promise<SaleFormState> {
-  const { fieldErrors, values } = parseSaleForm(formData);
+): Promise<PurchaseFormState> {
+  const { fieldErrors, values } = parsePurchaseForm(formData);
   if (Object.keys(fieldErrors).length > 0) {
     return { fieldErrors };
   }
@@ -83,33 +77,36 @@ export async function saveSaleAction(
   const supabase = await createClient();
 
   if (id) {
-    const update: TablesUpdate<"sales"> = values;
+    const update: TablesUpdate<"purchases"> = values;
     const { data, error } = await supabase
-      .from("sales")
+      .from("purchases")
       .update(update)
       .eq("id", id)
       .select("id");
 
     if (error) return { error: error.message };
     if (!data || data.length === 0) {
-      return { error: "You don't have permission to edit this row." };
+      return { error: "Anda tidak memiliki izin untuk mengubah data ini." };
     }
   } else {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user) return { error: "Not signed in." };
+    if (!user) return { error: "Anda belum masuk (sign in)." };
 
-    const insert: TablesInsert<"sales"> = { ...values, created_by: user.id };
-    const { error } = await supabase.from("sales").insert(insert);
+    const insert: TablesInsert<"purchases"> = {
+      ...values,
+      created_by: user.id,
+    };
+    const { error } = await supabase.from("purchases").insert(insert);
     if (error) return { error: error.message };
   }
 
-  revalidatePath("/sales");
+  revalidatePath("/produk");
   redirect(returnTo);
 }
 
-export async function deleteSaleAction(
+export async function deletePurchaseAction(
   _prevState: DeleteFormState,
   formData: FormData,
 ): Promise<DeleteFormState> {
@@ -118,16 +115,16 @@ export async function deleteSaleAction(
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from("sales")
+    .from("purchases")
     .delete()
     .eq("id", id)
     .select("id");
 
   if (error) return { error: error.message };
   if (!data || data.length === 0) {
-    return { error: "You don't have permission to delete this row." };
+    return { error: "Anda tidak memiliki izin untuk menghapus data ini." };
   }
 
-  revalidatePath("/sales");
+  revalidatePath("/produk");
   redirect(returnTo);
 }

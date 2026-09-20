@@ -4,12 +4,12 @@ import { PAGE_SIZE, parsePage, sanitizeSearchTerm } from "@/lib/crud/list-query"
 import { SearchBox } from "@/components/crud/search-box";
 import { Pagination } from "@/components/crud/pagination";
 import { ConfirmDeleteModal } from "@/components/crud/confirm-delete-modal";
-import { SalesTable } from "@/components/sales/sales-table";
-import { SaleFormModal } from "@/components/sales/sale-form-modal";
-import { deleteSaleAction } from "./actions";
+import { PurchasesTable } from "@/components/purchases/purchases-table";
+import { PurchaseFormModal } from "@/components/purchases/purchase-form-modal";
+import { deletePurchaseAction } from "./actions";
 import type { UserRole } from "@/types/database";
 
-export default async function SalesPage({
+export default async function ProdukPage({
   searchParams,
 }: {
   searchParams: Promise<{
@@ -36,14 +36,14 @@ export default async function SalesPage({
   const currentUserRole: UserRole = profile?.role ?? "staff";
 
   let query = supabase
-    .from("sales")
+    .from("purchases")
     .select("*", { count: "exact" })
-    .order("sale_date", { ascending: false });
+    .order("purchase_date", { ascending: false });
 
   if (q) {
     const term = sanitizeSearchTerm(q);
     query = query.or(
-      `product_name.ilike.%${term}%,order_no.ilike.%${term}%,product_code.ilike.%${term}%`,
+      `product_name.ilike.%${term}%,product_code.ilike.%${term}%,category.ilike.%${term}%`,
     );
   }
 
@@ -52,14 +52,15 @@ export default async function SalesPage({
 
   const editingRow =
     modal === "edit" && id
-      ? (await supabase.from("sales").select("*").eq("id", id).single()).data
+      ? (await supabase.from("purchases").select("*").eq("id", id).single())
+          .data
       : null;
 
   const deletingRow =
     modal === "delete" && id
       ? (await supabase
-          .from("sales")
-          .select("id, order_no, product_name")
+          .from("purchases")
+          .select("id, product_code, product_name")
           .eq("id", id)
           .single()).data
       : null;
@@ -67,32 +68,34 @@ export default async function SalesPage({
   const baseQuery = new URLSearchParams();
   if (q) baseQuery.set("q", q);
   const queryString = baseQuery.toString();
-  const returnTo = queryString ? `/sales?${queryString}` : "/sales";
+  const returnTo = queryString ? `/produk?${queryString}` : "/produk";
 
   function hrefWith(extra: Record<string, string>) {
     const params = new URLSearchParams(baseQuery);
     params.set("page", String(page));
     Object.entries(extra).forEach(([key, value]) => params.set(key, value));
-    return `/sales?${params.toString()}`;
+    return `/produk?${params.toString()}`;
   }
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold text-gray-900">Sales</h1>
+        <h1 className="font-serif text-xl font-semibold text-gray-900">
+          Produk
+        </h1>
         <Link
           href={hrefWith({ modal: "create" })}
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+          className="rounded-lg bg-honey px-4 py-2 text-sm font-bold text-honey-ink transition-colors hover:bg-[#ffb654]"
         >
-          + Add New
+          + Tambah Produk
         </Link>
       </div>
 
       <div className="mb-4">
-        <SearchBox placeholder="Search product, order no…" />
+        <SearchBox placeholder="Cari produk, kode, kategori…" />
       </div>
 
-      <SalesTable
+      <PurchasesTable
         rows={rows ?? []}
         currentUserId={user!.id}
         currentUserRole={currentUserRole}
@@ -103,15 +106,15 @@ export default async function SalesPage({
       <Pagination
         page={page}
         totalPages={totalPages}
-        basePath="/sales"
+        basePath="/produk"
         query={queryString}
       />
 
       {modal === "create" && (
-        <SaleFormModal mode="create" returnTo={returnTo} />
+        <PurchaseFormModal mode="create" returnTo={returnTo} />
       )}
       {modal === "edit" && editingRow && (
-        <SaleFormModal
+        <PurchaseFormModal
           mode="edit"
           defaultValues={editingRow}
           returnTo={returnTo}
@@ -120,9 +123,9 @@ export default async function SalesPage({
       {modal === "delete" && deletingRow && (
         <ConfirmDeleteModal
           id={deletingRow.id}
-          itemLabel={`${deletingRow.order_no} — ${deletingRow.product_name}`}
+          itemLabel={`${deletingRow.product_code} — ${deletingRow.product_name}`}
           returnTo={returnTo}
-          action={deleteSaleAction}
+          action={deletePurchaseAction}
         />
       )}
     </div>

@@ -17,8 +17,8 @@ export function SalesTable({
 }) {
   if (rows.length === 0) {
     return (
-      <div className="flex h-32 items-center justify-center rounded-md border border-dashed border-gray-200 text-sm text-gray-400">
-        No sales found.
+      <div className="flex h-32 items-center justify-center rounded-[10px] border border-dashed border-gray-200 text-sm text-gray-400">
+        Belum ada penjualan.
       </div>
     );
   }
@@ -28,23 +28,25 @@ export function SalesTable({
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200">
-      <table className="w-full min-w-[720px] text-left text-sm">
+    <div className="overflow-x-auto rounded-[10px] border border-gray-200">
+      <table className="w-full min-w-[760px] text-left text-sm">
         <thead className="bg-gray-50">
           <tr className="text-xs uppercase tracking-wide text-gray-400">
-            <th className="px-4 py-3 font-medium">Date</th>
-            <th className="px-4 py-3 font-medium">Order</th>
+            <th className="px-4 py-3 font-medium">Tanggal</th>
+            <th className="px-4 py-3 font-medium">No. Order</th>
             <th className="px-4 py-3 font-medium">Channel</th>
-            <th className="px-4 py-3 font-medium">Product</th>
+            <th className="px-4 py-3 font-medium">Produk</th>
             <th className="px-4 py-3 text-right font-medium">Qty</th>
-            <th className="px-4 py-3 text-right font-medium">Total</th>
-            <th className="px-4 py-3 text-right font-medium">Actions</th>
+            <th className="px-4 py-3 text-right font-medium">
+              Total Penjualan
+            </th>
+            <th className="px-4 py-3 text-right font-medium">Aksi</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">
           {rows.map((row) => (
             <tr key={row.id}>
-              <td className="px-4 py-3 whitespace-nowrap text-gray-500">
+              <td className="px-4 py-3 whitespace-nowrap text-gray-500 font-mono">
                 {formatDateShort(row.sale_date)}
               </td>
               <td className="px-4 py-3 whitespace-nowrap text-gray-900">
@@ -61,10 +63,10 @@ export function SalesTable({
                   </span>
                 )}
               </td>
-              <td className="px-4 py-3 text-right text-gray-900">
+              <td className="px-4 py-3 text-right font-mono text-gray-900">
                 {row.quantity}
               </td>
-              <td className="px-4 py-3 text-right font-medium text-gray-900">
+              <td className="px-4 py-3 text-right font-mono font-medium text-gray-900">
                 {formatCurrency(row.total_sales)}
               </td>
               <td className="px-4 py-3 text-right whitespace-nowrap">
@@ -72,15 +74,15 @@ export function SalesTable({
                   <div className="flex justify-end gap-3">
                     <Link
                       href={editHrefFor(row.id)}
-                      className="font-medium text-blue-600 hover:underline"
+                      className="font-medium text-honey-deep hover:underline"
                     >
                       Edit
                     </Link>
                     <Link
                       href={deleteHrefFor(row.id)}
-                      className="font-medium text-red-600 hover:underline"
+                      className="font-medium text-danger hover:underline"
                     >
-                      Delete
+                      Hapus
                     </Link>
                   </div>
                 ) : (

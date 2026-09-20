@@ -1,9 +1,9 @@
 export type Period = "today" | "7d" | "30d";
 
 export const PERIOD_OPTIONS: { value: Period; label: string }[] = [
-  { value: "today", label: "Today" },
-  { value: "7d", label: "Last 7 days" },
-  { value: "30d", label: "Last 30 days" },
+  { value: "today", label: "Hari ini" },
+  { value: "7d", label: "7 hari terakhir" },
+  { value: "30d", label: "30 hari terakhir" },
 ];
 
 export function isPeriod(value: string | undefined): value is Period {

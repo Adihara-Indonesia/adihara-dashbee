@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { Modal, useCloseModal } from "@/components/crud/modal";
 import { FormField } from "@/components/crud/form-field";
-import { saveSaleAction, type SaleFormState } from "@/app/(dashboard)/sales/actions";
+import { saveSaleAction, type SaleFormState } from "@/app/(dashboard)/penjualan/actions";
 import type { Sale } from "@/types/database";
 
 const initialState: SaleFormState = {};
@@ -25,14 +25,14 @@ export function SaleFormModal({
   const errors = state.fieldErrors ?? {};
 
   return (
-    <Modal title={mode === "edit" ? "Edit sale" : "Add sale"}>
+    <Modal title={mode === "edit" ? "Edit Penjualan" : "Tambah Penjualan"}>
       <form action={formAction} className="space-y-4">
         <input type="hidden" name="id" value={defaultValues?.id ?? ""} />
         <input type="hidden" name="returnTo" value={returnTo} />
 
         <div className="grid grid-cols-2 gap-4">
           <FormField
-            label="Date"
+            label="Tanggal"
             name="sale_date"
             type="date"
             required
@@ -40,7 +40,7 @@ export function SaleFormModal({
             error={errors.sale_date}
           />
           <FormField
-            label="Order no."
+            label="No. Order"
             name="order_no"
             type="text"
             required
@@ -50,7 +50,7 @@ export function SaleFormModal({
         </div>
 
         <FormField
-          label="Sales channel"
+          label="Sales Channel"
           name="sales_channel"
           type="text"
           required
@@ -61,7 +61,7 @@ export function SaleFormModal({
 
         <div className="grid grid-cols-2 gap-4">
           <FormField
-            label="Product code"
+            label="Kode Produk"
             name="product_code"
             type="text"
             required
@@ -69,7 +69,7 @@ export function SaleFormModal({
             error={errors.product_code}
           />
           <FormField
-            label="Product name"
+            label="Nama Produk"
             name="product_name"
             type="text"
             required
@@ -80,13 +80,13 @@ export function SaleFormModal({
 
         <div className="grid grid-cols-2 gap-4">
           <FormField
-            label="Color"
+            label="Warna"
             name="color"
             type="text"
             defaultValue={defaultValues?.color ?? ""}
           />
           <FormField
-            label="Size"
+            label="Ukuran"
             name="size"
             type="text"
             defaultValue={defaultValues?.size ?? ""}
@@ -95,7 +95,7 @@ export function SaleFormModal({
 
         <div className="grid grid-cols-3 gap-4">
           <FormField
-            label="Quantity"
+            label="Qty"
             name="quantity"
             type="number"
             min={1}
@@ -105,7 +105,7 @@ export function SaleFormModal({
             error={errors.quantity}
           />
           <FormField
-            label="Unit price"
+            label="Harga Jual/Unit"
             name="unit_price"
             type="number"
             min={0}
@@ -115,7 +115,7 @@ export function SaleFormModal({
             error={errors.unit_price}
           />
           <FormField
-            label="Unit cost"
+            label="HPP/Unit"
             name="unit_cost"
             type="number"
             min={0}
@@ -127,7 +127,7 @@ export function SaleFormModal({
         </div>
 
         {state.error && (
-          <p className="text-sm text-red-600" role="alert">
+          <p className="text-sm text-danger" role="alert">
             {state.error}
           </p>
         )}
@@ -138,14 +138,18 @@ export function SaleFormModal({
             onClick={close}
             className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
-            Cancel
+            Batal
           </button>
           <button
             type="submit"
             disabled={pending}
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-lg bg-honey px-4 py-2 text-sm font-bold text-honey-ink transition-colors hover:bg-[#ffb654] disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {pending ? "Saving…" : mode === "edit" ? "Save changes" : "Add sale"}
+            {pending
+              ? "Menyimpan…"
+              : mode === "edit"
+                ? "Simpan Perubahan"
+                : "Tambah Penjualan"}
           </button>
         </div>
       </form>

@@ -10,9 +10,9 @@ export function SalesChartSection({ data }: { data: SalesOverview }) {
   const hasData = data.chart.length > 0;
 
   return (
-    <Card title="Sales overview">
+    <Card title="Ringkasan Penjualan">
       <StatCard
-        label="Total sales"
+        label="Total Penjualan"
         value={formatCurrency(data.currentTotal)}
         changePercent={percentChange(data.currentTotal, data.previousTotal)}
       />
@@ -21,7 +21,7 @@ export function SalesChartSection({ data }: { data: SalesOverview }) {
         {hasData ? (
           <SalesChart data={data.chart} />
         ) : (
-          <EmptyState message="No sales recorded for this period yet." />
+          <EmptyState message="Belum ada penjualan pada periode ini." />
         )}
       </div>
     </Card>

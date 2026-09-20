@@ -285,6 +285,92 @@ export interface Database {
           },
         ];
       };
+      /**
+       * Aligned to the "Pengeluaran" reference sheet: Tanggal, Kategori,
+       * Deskripsi, Jumlah. One row per operating-expense entry.
+       */
+      expenses: {
+        Row: {
+          id: string;
+          expense_date: string;
+          category: string;
+          description: string;
+          amount: number;
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          expense_date?: string;
+          category: string;
+          description?: string;
+          amount: number;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          expense_date?: string;
+          category?: string;
+          description?: string;
+          amount?: number;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "expenses_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      /**
+       * Aligned to the "Pemasukan Lain-lain" section of the reference sheet's
+       * "Pemasukan" tab: Tanggal, Sumber, Deskripsi, Jumlah. The per-channel
+       * per-month sales summary in that same tab is computed from `sales`
+       * instead of stored here.
+       */
+      other_income: {
+        Row: {
+          id: string;
+          income_date: string;
+          source: string;
+          description: string;
+          amount: number;
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          income_date?: string;
+          source: string;
+          description?: string;
+          amount: number;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          income_date?: string;
+          source?: string;
+          description?: string;
+          amount?: number;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "other_income_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -322,3 +408,5 @@ export type BusinessInfo = Tables<"business_info">;
 export type Purchase = Tables<"purchases">;
 export type Sale = Tables<"sales">;
 export type StockOpname = Tables<"stock_opname">;
+export type Expense = Tables<"expenses">;
+export type OtherIncome = Tables<"other_income">;

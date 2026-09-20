@@ -40,7 +40,7 @@ export async function signInAction(
   });
 
   if (error) {
-    return { error: "Incorrect email or password." };
+    return { error: "Email atau kata sandi salah." };
   }
 
   const { whitelisted } = await verifyWhitelistedUser(
@@ -49,10 +49,10 @@ export async function signInAction(
   );
 
   if (!whitelisted) {
-    return { error: "Your account is pending approval." };
+    return { error: "Akun Anda masih menunggu persetujuan." };
   }
 
-  redirect("/");
+  redirect("/dashboard");
 }
 
 export async function signUpAction(
@@ -71,7 +71,7 @@ export async function signUpAction(
 
   if (!data.session) {
     return {
-      info: "Check your email to confirm your account, then sign in.",
+      info: "Cek email Anda untuk konfirmasi akun, lalu masuk.",
     };
   }
 
@@ -81,8 +81,8 @@ export async function signUpAction(
   );
 
   if (!whitelisted) {
-    return { error: "Your account is pending approval." };
+    return { error: "Akun Anda masih menunggu persetujuan." };
   }
 
-  redirect("/");
+  redirect("/dashboard");
 }

@@ -4,12 +4,12 @@ import { PAGE_SIZE, parsePage, sanitizeSearchTerm } from "@/lib/crud/list-query"
 import { SearchBox } from "@/components/crud/search-box";
 import { Pagination } from "@/components/crud/pagination";
 import { ConfirmDeleteModal } from "@/components/crud/confirm-delete-modal";
-import { PurchasesTable } from "@/components/purchases/purchases-table";
-import { PurchaseFormModal } from "@/components/purchases/purchase-form-modal";
-import { deletePurchaseAction } from "./actions";
+import { StockOpnameTable } from "@/components/stok-opname/stock-opname-table";
+import { StockOpnameFormModal } from "@/components/stok-opname/stock-opname-form-modal";
+import { deleteStockOpnameAction } from "./actions";
 import type { UserRole } from "@/types/database";
 
-export default async function PurchasesPage({
+export default async function StokOpnamePage({
   searchParams,
 }: {
   searchParams: Promise<{
@@ -36,14 +36,14 @@ export default async function PurchasesPage({
   const currentUserRole: UserRole = profile?.role ?? "staff";
 
   let query = supabase
-    .from("purchases")
+    .from("stock_opname")
     .select("*", { count: "exact" })
-    .order("purchase_date", { ascending: false });
+    .order("count_date", { ascending: false });
 
   if (q) {
     const term = sanitizeSearchTerm(q);
     query = query.or(
-      `product_name.ilike.%${term}%,product_code.ilike.%${term}%,category.ilike.%${term}%`,
+      `product_name.ilike.%${term}%,product_code.ilike.%${term}%`,
     );
   }
 
@@ -52,48 +52,55 @@ export default async function PurchasesPage({
 
   const editingRow =
     modal === "edit" && id
-      ? (await supabase.from("purchases").select("*").eq("id", id).single())
-          .data
+      ? (
+          await supabase.from("stock_opname").select("*").eq("id", id).single()
+        ).data
       : null;
 
   const deletingRow =
     modal === "delete" && id
-      ? (await supabase
-          .from("purchases")
-          .select("id, product_code, product_name")
-          .eq("id", id)
-          .single()).data
+      ? (
+          await supabase
+            .from("stock_opname")
+            .select("id, product_code, product_name")
+            .eq("id", id)
+            .single()
+        ).data
       : null;
 
   const baseQuery = new URLSearchParams();
   if (q) baseQuery.set("q", q);
   const queryString = baseQuery.toString();
-  const returnTo = queryString ? `/purchases?${queryString}` : "/purchases";
+  const returnTo = queryString
+    ? `/stok-opname?${queryString}`
+    : "/stok-opname";
 
   function hrefWith(extra: Record<string, string>) {
     const params = new URLSearchParams(baseQuery);
     params.set("page", String(page));
     Object.entries(extra).forEach(([key, value]) => params.set(key, value));
-    return `/purchases?${params.toString()}`;
+    return `/stok-opname?${params.toString()}`;
   }
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold text-gray-900">Purchases</h1>
+        <h1 className="font-serif text-xl font-semibold text-gray-900">
+          Stok Opname
+        </h1>
         <Link
           href={hrefWith({ modal: "create" })}
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+          className="rounded-lg bg-honey px-4 py-2 text-sm font-bold text-honey-ink transition-colors hover:bg-[#ffb654]"
         >
-          + Add New
+          + Tambah Data
         </Link>
       </div>
 
       <div className="mb-4">
-        <SearchBox placeholder="Search product, code, category…" />
+        <SearchBox placeholder="Cari produk, kode…" />
       </div>
 
-      <PurchasesTable
+      <StockOpnameTable
         rows={rows ?? []}
         currentUserId={user!.id}
         currentUserRole={currentUserRole}
@@ -104,15 +111,15 @@ export default async function PurchasesPage({
       <Pagination
         page={page}
         totalPages={totalPages}
-        basePath="/purchases"
+        basePath="/stok-opname"
         query={queryString}
       />
 
       {modal === "create" && (
-        <PurchaseFormModal mode="create" returnTo={returnTo} />
+        <StockOpnameFormModal mode="create" returnTo={returnTo} />
       )}
       {modal === "edit" && editingRow && (
-        <PurchaseFormModal
+        <StockOpnameFormModal
           mode="edit"
           defaultValues={editingRow}
           returnTo={returnTo}
@@ -123,7 +130,7 @@ export default async function PurchasesPage({
           id={deletingRow.id}
           itemLabel={`${deletingRow.product_code} — ${deletingRow.product_name}`}
           returnTo={returnTo}
-          action={deletePurchaseAction}
+          action={deleteStockOpnameAction}
         />
       )}
     </div>

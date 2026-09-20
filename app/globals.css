@@ -3,12 +3,66 @@
 :root {
   --background: #f9fafb;
   --foreground: #111827;
+
+  /* Design tokens shared with design-reference/dashbee-landing.html — the
+     marketing page's own dark/paper sections use these directly, and the
+     dashboard's restyled UI (cards, stat badges, sidebar) pulls the same
+     honey/good/warn accents so both halves of the app read as one product. */
+  --ink: #12141c;
+  --ink-2: #1a1d2b;
+  --ink-line: #2c3044;
+  --ink-text: #eeedea;
+  --ink-muted: #9a9db0;
+
+  --paper: #faf7f1;
+  --paper-2: #f2ede1;
+  --paper-line: #e4ddca;
+  --paper-text: #1c1a15;
+  --paper-muted: #6d6a5f;
+
+  --honey: #f2a53c;
+  --honey-deep: #a8620a;
+  --honey-ink: #3a2506;
+
+  --good: #15803d;
+  --good-soft: #e9f7ef;
+  --warn: #b45309;
+  --warn-soft: #fdf1de;
+  /* Not part of the reference file's palette — added for delete/error states
+     (toasts, form errors), kept consistent with the good/warn soft-tint pattern. */
+  --danger: #b91c1c;
+  --danger-soft: #fef2f2;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
+  --font-serif: var(--font-fraunces);
+  --font-mono: var(--font-plex-mono);
+
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-line: var(--ink-line);
+  --color-ink-text: var(--ink-text);
+  --color-ink-muted: var(--ink-muted);
+
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-line: var(--paper-line);
+  --color-paper-text: var(--paper-text);
+  --color-paper-muted: var(--paper-muted);
+
+  --color-honey: var(--honey);
+  --color-honey-deep: var(--honey-deep);
+  --color-honey-ink: var(--honey-ink);
+
+  --color-good: var(--good);
+  --color-good-soft: var(--good-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
 }
 
 body {

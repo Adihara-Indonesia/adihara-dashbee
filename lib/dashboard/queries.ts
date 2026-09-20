@@ -2,6 +2,7 @@ import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
 import type { PeriodRange } from "./period";
+import { getLabaRugiReport } from "@/lib/laba-rugi/queries";
 
 type DB = SupabaseClient<Database>;
 
@@ -174,5 +175,63 @@ export async function getStockOpnameOverview(
     discrepancyCount: rows.filter((r) => r.difference !== 0).length,
     totalCount: rows.length,
     rows,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Business summary — mirrors the reference sheet's Dashboard tab (KPIs +
+// per-channel and per-month charts). Unlike the sections above, this is an
+// all-time-to-date summary rather than a rolling day-window: the sheet's own
+// Dashboard is "Juli - 20 September 2026 (up to date)", not a 7d/30d filter,
+// and the monthly chart is inherently month-shaped. Reuses
+// getLabaRugiReport's totals so the two pages can never disagree on the
+// Laba Kotor / Laba Bersih formulas.
+// ---------------------------------------------------------------------------
+
+export type BusinessSummary = {
+  totalPenjualan: number;
+  totalHpp: number;
+  labaKotor: number;
+  totalBebanOperasional: number;
+  labaBersih: number;
+  marginLabaBersih: number;
+  totalPesanan: number;
+  salesByChannel: { channel: string; total: number }[];
+  monthly: { month: string; pendapatan: number; beban: number; labaBersih: number }[];
+};
+
+export async function getBusinessSummary(supabase: DB): Promise<BusinessSummary> {
+  const [{ data: salesRows }, report] = await Promise.all([
+    supabase.from("sales").select("sales_channel, total_sales"),
+    getLabaRugiReport(supabase),
+  ]);
+  const sales = salesRows ?? [];
+
+  const channelTotals = new Map<string, number>();
+  for (const row of sales) {
+    channelTotals.set(
+      row.sales_channel,
+      (channelTotals.get(row.sales_channel) ?? 0) + row.total_sales,
+    );
+  }
+  const salesByChannel = [...channelTotals.entries()]
+    .map(([channel, total]) => ({ channel, total }))
+    .sort((a, b) => b.total - a.total);
+
+  return {
+    totalPenjualan: report.total.pendapatanPenjualan,
+    totalHpp: report.total.hpp,
+    labaKotor: report.total.labaKotor,
+    totalBebanOperasional: report.total.totalBeban,
+    labaBersih: report.total.labaBersih,
+    marginLabaBersih: report.total.marginPercent,
+    totalPesanan: sales.length,
+    salesByChannel,
+    monthly: report.months.map((m) => ({
+      month: m.month,
+      pendapatan: m.totalPendapatan,
+      beban: m.totalBeban,
+      labaBersih: m.labaBersih,
+    })),
   };
 }

@@ -9,28 +9,45 @@ const SHEET_TABS = {
   purchases: "Produk",
   sales: "Penjualan",
   stockOpname: "Stok Opname",
+  expenses: "Pengeluaran",
+  income: "Pemasukan",
 } as const;
 
 export type SyncSummary = {
   purchases: number;
   sales: number;
   stockOpname: number;
+  expenses: number;
+  otherIncome: number;
 };
 
 export async function syncSheetToSupabase(): Promise<SyncSummary> {
   const spreadsheetId = requireEnv("GOOGLE_SHEETS_SPREADSHEET_ID");
   const auth = getAuthClient();
 
-  const [purchaseRows, salesRows, stockOpnameRows] = await Promise.all([
-    fetchSheetRows(auth, spreadsheetId, SHEET_TABS.purchases),
-    fetchSheetRows(auth, spreadsheetId, SHEET_TABS.sales),
-    fetchSheetRows(auth, spreadsheetId, SHEET_TABS.stockOpname),
-  ]);
+  const [purchaseRows, salesRows, stockOpnameRows, expenseRows, incomeRows] =
+    await Promise.all([
+      fetchSheetRows(auth, spreadsheetId, SHEET_TABS.purchases),
+      fetchSheetRows(auth, spreadsheetId, SHEET_TABS.sales),
+      fetchSheetRows(auth, spreadsheetId, SHEET_TABS.stockOpname),
+      fetchSheetRows(auth, spreadsheetId, SHEET_TABS.expenses),
+      fetchSheetRows(auth, spreadsheetId, SHEET_TABS.income),
+    ]);
 
   const purchases = rowsToRecords(purchaseRows).map(mapPurchaseRow).filter(isNotNull);
   const sales = rowsToRecords(salesRows).map(mapSalesRow).filter(isNotNull);
   const stockOpname = rowsToRecords(stockOpnameRows)
     .map(mapStockOpnameRow)
+    .filter(isNotNull);
+  // The Pengeluaran tab has a single table, header anchored by "Kategori".
+  const expenses = rowsToRecords(expenseRows, "Kategori")
+    .map(mapExpenseRow)
+    .filter(isNotNull);
+  // The Pemasukan tab has two stacked tables — a per-channel-per-month sales
+  // summary (skipped; computed from `sales` instead) followed by "Pemasukan
+  // Lain-lain", whose header is the only one in the tab with a "Sumber" cell.
+  const otherIncome = rowsToRecords(incomeRows, "Sumber")
+    .map(mapOtherIncomeRow)
     .filter(isNotNull);
 
   const admin = createAdminClient();
@@ -56,10 +73,30 @@ export async function syncSheetToSupabase(): Promise<SyncSummary> {
     if (error) throw new Error(`stock_opname upsert failed: ${error.message}`);
   }
 
+  if (expenses.length > 0) {
+    const { error } = await admin
+      .from("expenses")
+      .upsert(expenses, {
+        onConflict: "expense_date,category,description,amount",
+      });
+    if (error) throw new Error(`expenses upsert failed: ${error.message}`);
+  }
+
+  if (otherIncome.length > 0) {
+    const { error } = await admin
+      .from("other_income")
+      .upsert(otherIncome, {
+        onConflict: "income_date,source,description,amount",
+      });
+    if (error) throw new Error(`other_income upsert failed: ${error.message}`);
+  }
+
   return {
     purchases: purchases.length,
     sales: sales.length,
     stockOpname: stockOpname.length,
+    expenses: expenses.length,
+    otherIncome: otherIncome.length,
   };
 }
 
@@ -124,19 +161,23 @@ function normalizeHeader(header: string): string {
  * Each tab has a title row and a description row before the real header
  * (e.g. "Master Produk" / "Data induk produk..." / blank / "Kode Produk",
  * ...), so the header can't be assumed to be row 1 — this scans for the
- * first row containing a "Kode Produk" cell, which every sheet this sync
- * reads has (as column A on Produk/Stok Opname, but column D on Penjualan
- * — so it's matched anywhere in the row, not just index 0).
+ * first row containing an anchor cell (default "Kode Produk", present on
+ * Produk/Penjualan/Stok Opname — matched anywhere in the row, not just index
+ * 0). Pengeluaran and Pemasukan don't have a "Kode Produk" column, so their
+ * callers pass a different anchor ("Kategori" / "Sumber"); Pemasukan's tab
+ * also has an *earlier*, unrelated header row (its per-channel-per-month
+ * summary table), so "Sumber" — unique to the "Pemasukan Lain-lain" header —
+ * is what skips past it to the right table.
  */
-function findHeaderRowIndex(rows: unknown[][]): number {
-  const target = normalizeHeader("Kode Produk");
+function findHeaderRowIndex(rows: unknown[][], anchor = "Kode Produk"): number {
+  const target = normalizeHeader(anchor);
   return rows.findIndex((row) =>
     row.some((cell) => normalizeHeader(String(cell ?? "")) === target),
   );
 }
 
-function rowsToRecords(rows: unknown[][]): SheetRow[] {
-  const headerIndex = findHeaderRowIndex(rows);
+function rowsToRecords(rows: unknown[][], anchor = "Kode Produk"): SheetRow[] {
+  const headerIndex = findHeaderRowIndex(rows, anchor);
   if (headerIndex === -1) return [];
 
   const [header, ...body] = rows.slice(headerIndex);
@@ -257,5 +298,42 @@ function mapStockOpnameRow(
     // count_date isn't a sheet column — each sync run reflects "as counted
     // today." Re-running sync the same day updates today's row in place.
     count_date: new Date().toISOString().slice(0, 10),
+  };
+}
+
+/**
+ * The sheet's "Total Pengeluaran" trailer row has a blank Tanggal/Kategori
+ * cell (its total sits in the Deskripsi/Jumlah columns), so guarding on
+ * those two being present naturally excludes it without extra logic.
+ */
+function mapExpenseRow(record: SheetRow): TablesInsert<"expenses"> | null {
+  const expenseDate = str(get(record, "Tanggal"));
+  const category = str(get(record, "Kategori"));
+  if (!expenseDate || !category) return null;
+
+  return {
+    expense_date: dateStr(get(record, "Tanggal")),
+    category,
+    description: str(get(record, "Deskripsi")),
+    amount: num(get(record, "Jumlah")),
+  };
+}
+
+/**
+ * Same trailer-row guard as mapExpenseRow, for the sheet's "Subtotal
+ * Lain-lain" row (blank Tanggal/Sumber).
+ */
+function mapOtherIncomeRow(
+  record: SheetRow,
+): TablesInsert<"other_income"> | null {
+  const incomeDate = str(get(record, "Tanggal"));
+  const source = str(get(record, "Sumber"));
+  if (!incomeDate || !source) return null;
+
+  return {
+    income_date: dateStr(get(record, "Tanggal")),
+    source,
+    description: str(get(record, "Deskripsi")),
+    amount: num(get(record, "Jumlah")),
   };
 }

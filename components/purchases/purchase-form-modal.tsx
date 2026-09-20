@@ -6,7 +6,7 @@ import { FormField } from "@/components/crud/form-field";
 import {
   savePurchaseAction,
   type PurchaseFormState,
-} from "@/app/(dashboard)/purchases/actions";
+} from "@/app/(dashboard)/produk/actions";
 import type { Purchase } from "@/types/database";
 
 const initialState: PurchaseFormState = {};
@@ -28,14 +28,14 @@ export function PurchaseFormModal({
   const errors = state.fieldErrors ?? {};
 
   return (
-    <Modal title={mode === "edit" ? "Edit purchase" : "Add purchase"}>
+    <Modal title={mode === "edit" ? "Edit Produk" : "Tambah Produk"}>
       <form action={formAction} className="space-y-4">
         <input type="hidden" name="id" value={defaultValues?.id ?? ""} />
         <input type="hidden" name="returnTo" value={returnTo} />
 
         <div className="grid grid-cols-2 gap-4">
           <FormField
-            label="Date"
+            label="Tanggal"
             name="purchase_date"
             type="date"
             required
@@ -43,7 +43,7 @@ export function PurchaseFormModal({
             error={errors.purchase_date}
           />
           <FormField
-            label="Category"
+            label="Kategori"
             name="category"
             type="text"
             defaultValue={defaultValues?.category ?? ""}
@@ -52,7 +52,7 @@ export function PurchaseFormModal({
 
         <div className="grid grid-cols-2 gap-4">
           <FormField
-            label="Product code"
+            label="Kode Produk"
             name="product_code"
             type="text"
             required
@@ -60,7 +60,7 @@ export function PurchaseFormModal({
             error={errors.product_code}
           />
           <FormField
-            label="Product name"
+            label="Nama Produk"
             name="product_name"
             type="text"
             required
@@ -71,13 +71,13 @@ export function PurchaseFormModal({
 
         <div className="grid grid-cols-2 gap-4">
           <FormField
-            label="Color"
+            label="Warna"
             name="color"
             type="text"
             defaultValue={defaultValues?.color ?? ""}
           />
           <FormField
-            label="Size"
+            label="Ukuran"
             name="size"
             type="text"
             defaultValue={defaultValues?.size ?? ""}
@@ -86,7 +86,7 @@ export function PurchaseFormModal({
 
         <div className="grid grid-cols-3 gap-4">
           <FormField
-            label="Stock qty"
+            label="Stok Awal"
             name="initial_stock"
             type="number"
             min={0}
@@ -96,7 +96,7 @@ export function PurchaseFormModal({
             error={errors.initial_stock}
           />
           <FormField
-            label="Unit cost"
+            label="Harga Beli (HPP)"
             name="unit_cost"
             type="number"
             min={0}
@@ -106,7 +106,7 @@ export function PurchaseFormModal({
             error={errors.unit_cost}
           />
           <FormField
-            label="Sell price"
+            label="Harga Jual"
             name="sell_price"
             type="number"
             min={0}
@@ -118,7 +118,7 @@ export function PurchaseFormModal({
         </div>
 
         {state.error && (
-          <p className="text-sm text-red-600" role="alert">
+          <p className="text-sm text-danger" role="alert">
             {state.error}
           </p>
         )}
@@ -129,18 +129,18 @@ export function PurchaseFormModal({
             onClick={close}
             className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
-            Cancel
+            Batal
           </button>
           <button
             type="submit"
             disabled={pending}
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-lg bg-honey px-4 py-2 text-sm font-bold text-honey-ink transition-colors hover:bg-[#ffb654] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {pending
-              ? "Saving…"
+              ? "Menyimpan…"
               : mode === "edit"
-                ? "Save changes"
-                : "Add purchase"}
+                ? "Simpan Perubahan"
+                : "Tambah Produk"}
           </button>
         </div>
       </form>

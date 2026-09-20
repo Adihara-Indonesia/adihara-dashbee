@@ -28,8 +28,8 @@ export function LoginForm() {
             type="email"
             required
             autoComplete="email"
-            placeholder="you@company.com"
-            className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            placeholder="anda@perusahaan.com"
+            className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-honey focus:outline-none focus:ring-1 focus:ring-honey"
           />
         </div>
 
@@ -38,7 +38,7 @@ export function LoginForm() {
             htmlFor="password"
             className="mb-1.5 block text-sm font-medium text-gray-900"
           >
-            Password
+            Kata Sandi
           </label>
           <input
             id="password"
@@ -48,17 +48,17 @@ export function LoginForm() {
             minLength={6}
             placeholder="••••••••"
             autoComplete={mode === "sign-in" ? "current-password" : "new-password"}
-            className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-honey focus:outline-none focus:ring-1 focus:ring-honey"
           />
         </div>
 
         {state.error && (
-          <p className="text-sm text-red-600" role="alert">
+          <p className="text-sm text-danger" role="alert">
             {state.error}
           </p>
         )}
         {state.info && (
-          <p className="text-sm text-green-700" role="status">
+          <p className="text-sm text-good" role="status">
             {state.info}
           </p>
         )}
@@ -66,24 +66,24 @@ export function LoginForm() {
         <button
           type="submit"
           disabled={pending}
-          className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full rounded-lg bg-honey px-4 py-2.5 text-sm font-bold text-honey-ink transition-colors hover:bg-[#ffb654] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {pending
-            ? "Please wait…"
+            ? "Mohon tunggu…"
             : mode === "sign-in"
-              ? "Sign in"
-              : "Create account"}
+              ? "Masuk"
+              : "Buat Akun"}
         </button>
       </form>
 
       <p className="mt-4 text-center text-sm text-gray-500">
-        {mode === "sign-in" ? "Don't have an account?" : "Already have an account?"}{" "}
+        {mode === "sign-in" ? "Belum punya akun?" : "Sudah punya akun?"}{" "}
         <button
           type="button"
           onClick={() => setMode(mode === "sign-in" ? "sign-up" : "sign-in")}
-          className="font-medium text-blue-600 hover:underline"
+          className="font-medium text-honey-deep hover:underline"
         >
-          {mode === "sign-in" ? "Sign up" : "Sign in"}
+          {mode === "sign-in" ? "Daftar" : "Masuk"}
         </button>
       </p>
     </div>

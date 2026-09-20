@@ -9,9 +9,9 @@ export function PurchasesSection({ data }: { data: PurchasesOverview }) {
   const hasData = data.recent.length > 0;
 
   return (
-    <Card title="Purchases overview">
+    <Card title="Ringkasan Produk">
       <StatCard
-        label="Total purchases"
+        label="Nilai Stok"
         value={formatCurrency(data.currentTotal)}
         changePercent={percentChange(data.currentTotal, data.previousTotal)}
       />
@@ -22,11 +22,11 @@ export function PurchasesSection({ data }: { data: PurchasesOverview }) {
             <table className="w-full min-w-[480px] text-left text-sm">
               <thead>
                 <tr className="border-b border-gray-200 text-xs uppercase tracking-wide text-gray-400">
-                  <th className="py-2 pr-3 font-medium">Date</th>
-                  <th className="py-2 pr-3 font-medium">Product</th>
-                  <th className="py-2 pr-3 font-medium">Category</th>
+                  <th className="py-2 pr-3 font-medium">Tanggal</th>
+                  <th className="py-2 pr-3 font-medium">Produk</th>
+                  <th className="py-2 pr-3 font-medium">Kategori</th>
                   <th className="py-2 pr-3 text-right font-medium">Qty</th>
-                  <th className="py-2 pl-3 text-right font-medium">Cost</th>
+                  <th className="py-2 pl-3 text-right font-medium">HPP</th>
                 </tr>
               </thead>
               <tbody>
@@ -49,7 +49,7 @@ export function PurchasesSection({ data }: { data: PurchasesOverview }) {
             </table>
           </div>
         ) : (
-          <EmptyState message="No purchases recorded for this period yet." />
+          <EmptyState message="Belum ada produk pada periode ini." />
         )}
       </div>
     </Card>

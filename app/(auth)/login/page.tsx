@@ -5,8 +5,8 @@ import { LoginForm } from "./login-form";
 
 const ERROR_MESSAGES: Record<string, string> = {
   pending_approval:
-    "Your account is pending approval. We'll notify you once you're granted access.",
-  oauth_failed: "Google sign-in failed. Please try again.",
+    "Akun Anda masih menunggu persetujuan. Kami akan memberi tahu Anda setelah akses diberikan.",
+  oauth_failed: "Masuk dengan Google gagal. Silakan coba lagi.",
 };
 
 export default async function LoginPage({
@@ -24,23 +24,25 @@ export default async function LoginPage({
   if (user) {
     const { data: whitelisted } = await supabase.rpc("is_whitelisted");
     if (whitelisted) {
-      redirect("/");
+      redirect("/dashboard");
     }
   }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-sm ring-1 ring-gray-200">
+      <div className="w-full max-w-md rounded-[10px] border border-gray-200 bg-white p-8">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Dashbee</h1>
+          <h1 className="font-serif text-2xl font-bold text-gray-900">
+            Dashbee
+          </h1>
           <p className="mt-1 text-sm text-gray-500">
-            Sign in to your dashboard
+            Masuk ke dashboard Anda
           </p>
         </div>
 
         {error && ERROR_MESSAGES[error] && (
           <div
-            className="mb-6 rounded-md bg-red-50 px-4 py-3 text-sm text-red-700"
+            className="mb-6 rounded-md bg-danger-soft px-4 py-3 text-sm text-danger"
             role="alert"
           >
             {ERROR_MESSAGES[error]}
@@ -53,14 +55,14 @@ export default async function LoginPage({
             className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
           >
             <GoogleIcon className="h-5 w-5" />
-            Continue with Google
+            Lanjutkan dengan Google
           </button>
         </form>
 
         <div className="my-6 flex items-center gap-3">
           <div className="h-px flex-1 bg-gray-200" />
           <span className="text-xs font-medium uppercase tracking-wide text-gray-400">
-            or
+            atau
           </span>
           <div className="h-px flex-1 bg-gray-200" />
         </div>

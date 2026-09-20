@@ -20,7 +20,7 @@ export async function GET(request: Request) {
 
       return NextResponse.redirect(
         whitelisted
-          ? `${origin}/`
+          ? `${origin}/dashboard`
           : `${origin}/login?error=pending_approval`,
       );
     }
