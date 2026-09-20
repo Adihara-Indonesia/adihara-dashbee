@@ -654,6 +654,49 @@ export default function MarketingHomePage() {
                 ))}
               </ul>
             </div>
+
+            <div className="price-card" style={{ marginTop: "24px" }}>
+              <div>
+                <span className="eyebrow" style={{ color: "var(--honey)" }}>
+                  <span className="dot" />
+                  Add-on opsional
+                </span>
+                <h3 style={{ fontSize: "22px", fontFamily: "var(--serif)", marginTop: "10px", color: "var(--ink-text)" }}>
+                  Integrasi AI di Dashboard Anda
+                </h3>
+                <div style={{ marginTop: "14px" }}>
+                  <span className="price-tag" style={{ fontSize: "clamp(26px, 3.6vw, 36px)" }}>
+                    +Rp2.500.000
+                  </span>
+                </div>
+                <p style={{ color: "var(--ink-muted)", marginTop: "10px", fontSize: "14.5px", lineHeight: "1.6" }}>
+                  Sekali bayar, dashboard Anda bisa &ldquo;diajak ngobrol&rdquo; —
+                  tanya angka, minta ringkasan, atau cari insight cukup
+                  dengan bahasa sehari-hari. Ditenagai OpenRouter dengan
+                  model AI bawaan kami, tanpa biaya bulanan tambahan.
+                </p>
+                <div className="dp-note">
+                  Ingin pakai model kelas atas seperti Claude, Gemini, atau
+                  OpenAI? Bisa — tinggal tambah biaya langganan bulanan,
+                  besarnya mengikuti model yang Anda pilih.
+                </div>
+              </div>
+              <ul className="includes">
+                {[
+                  "Tanya-jawab data dashboard pakai bahasa sehari-hari",
+                  "Ringkasan & insight otomatis dari angka toko Anda",
+                  "Model AI bawaan kami sudah termasuk, tanpa biaya bulanan",
+                  "Bebas upgrade ke Claude, Gemini, atau OpenAI kapan saja",
+                ].map((item) => (
+                  <li key={item}>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M2 8.5 6 12l8-8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </section>
 
