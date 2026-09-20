@@ -75,9 +75,9 @@ export default function MarketingHomePage() {
                   dicatat manual di WhatsApp. Tiap akhir bulan Anda rekap
                   sendiri jam 11 malam cuma buat tahu untung atau rugi.
                   Dashbee menyatukan semuanya jadi satu dashboard yang
-                  otomatis terisi dari Google Sheets yang sudah biasa Anda
-                  pakai — tanpa pindah sistem, tanpa langganan yang naik
-                  terus tiap tahun.
+                  otomatis terisi dari Google Sheets, Excel, atau database
+                  apa pun yang sudah Anda miliki dan pakai — tanpa pindah
+                  sistem, tanpa langganan yang naik terus tiap tahun.
                 </p>
                 <div className="hero-ctas">
                   <a className="btn btn-honey" href="#kontak">
@@ -599,7 +599,7 @@ export default function MarketingHomePage() {
                   <tr>
                     <td>Sumber data awal</td>
                     <td>Input ulang / migrasi data</td>
-                    <td className="col-dashbee win">Google Sheets yang sudah Anda pakai</td>
+                    <td className="col-dashbee win">Google Sheets, Excel, atau database yang sudah Anda miliki</td>
                   </tr>
                 </tbody>
               </table>
