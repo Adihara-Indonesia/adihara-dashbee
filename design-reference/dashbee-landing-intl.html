@@ -1,0 +1,689 @@
+<title>Dashbee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12141c;
+    --ink-2:#1a1d2b;
+    --ink-3:#252939;
+    --ink-line:#2c3044;
+    --ink-text:#eeedea;
+    --ink-muted:#9a9db0;
+
+    --paper:#faf7f1;
+    --paper-2:#f2ede1;
+    --paper-line:#e4ddca;
+    --paper-text:#1c1a15;
+    --paper-muted:#6d6a5f;
+
+    --honey:#f2a53c;
+    --honey-deep:#a8620a;
+    --honey-ink:#3a2506;
+
+    --blue:#2563eb;
+    --blue-soft:#eaf0fe;
+    --good:#15803d;
+    --good-soft:#e9f7ef;
+    --warn:#b45309;
+    --warn-soft:#fdf1de;
+
+    --serif:'Fraunces', ui-serif, Georgia, serif;
+    --sans:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --mono:'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+
+    --content: 1120px;
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--ink);
+    color:var(--ink-text);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    padding-left:max(16px, env(safe-area-inset-left,0px));
+    padding-right:max(16px, env(safe-area-inset-right,0px));
+  }
+  img,svg{max-width:100%}
+  h1,h2,h3{font-family:var(--serif); text-wrap:balance; margin:0}
+  p{margin:0}
+  a{color:inherit}
+  .mono{font-family:var(--mono); font-variant-numeric:tabular-nums}
+  .wrap{max-width:var(--content); margin:0 auto; padding-left:8px; padding-right:8px}
+  @media (min-width:640px){ .wrap{padding-left:24px; padding-right:24px} }
+
+  section{padding-block:72px}
+  @media (min-width:860px){ section{padding-block:112px} }
+  .bg-ink{background:var(--ink); color:var(--ink-text)}
+  .bg-ink2{background:var(--ink-2); color:var(--ink-text)}
+  .bg-paper{background:var(--paper); color:var(--paper-text)}
+  .bg-paper2{background:var(--paper-2); color:var(--paper-text)}
+
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--mono); font-size:12px; letter-spacing:.09em; text-transform:uppercase;
+    font-weight:600;
+  }
+  .bg-ink .eyebrow,.bg-ink2 .eyebrow{color:var(--honey)}
+  .bg-paper .eyebrow,.bg-paper2 .eyebrow{color:var(--honey-deep)}
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+  h1{font-size:clamp(34px,5.4vw,58px); line-height:1.05; font-weight:600; letter-spacing:-0.01em}
+  h2{font-size:clamp(26px,3.6vw,40px); line-height:1.12; font-weight:600; letter-spacing:-0.01em}
+  h3{font-size:19px; font-weight:600}
+  .lede{font-size:clamp(16px,1.9vw,19px); line-height:1.6; max-width:52ch}
+  .bg-ink .lede,.bg-ink2 .lede{color:var(--ink-muted)}
+  .bg-paper .lede,.bg-paper2 .lede{color:var(--paper-muted)}
+
+  /* honeycomb texture */
+  .comb{position:relative; isolation:isolate}
+  .comb::before{
+    content:""; position:absolute; inset:0; z-index:0; pointer-events:none; opacity:.5;
+    background-image:
+      repeating-linear-gradient(120deg, rgba(242,165,60,.055) 0 1.5px, transparent 1.5px 52px),
+      repeating-linear-gradient(60deg, rgba(242,165,60,.055) 0 1.5px, transparent 1.5px 52px),
+      repeating-linear-gradient(0deg, rgba(242,165,60,.04) 0 1.5px, transparent 1.5px 90px);
+    mask-image:radial-gradient(ellipse 90% 70% at 50% 0%, #000 45%, transparent 92%);
+  }
+  .comb > .wrap{position:relative; z-index:1}
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    font-family:var(--sans); font-weight:700; font-size:15px;
+    padding:13px 22px; border-radius:9px; text-decoration:none; border:1px solid transparent;
+    cursor:pointer; transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+    white-space:nowrap;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn-honey{background:var(--honey); color:var(--honey-ink); box-shadow:0 1px 0 rgba(0,0,0,.15) inset, 0 8px 24px -10px rgba(242,165,60,.55)}
+  .btn-honey:hover{background:#ffb654}
+  .btn-ghost-dark{background:transparent; color:var(--ink-text); border-color:var(--ink-line)}
+  .btn-ghost-dark:hover{border-color:var(--honey); color:var(--honey)}
+  .btn-ghost-light{background:transparent; color:var(--paper-text); border-color:var(--paper-line)}
+  .btn-ghost-light:hover{border-color:var(--honey-deep); color:var(--honey-deep)}
+  .btn-dark{background:var(--ink); color:#fff; border-color:var(--ink)}
+  .btn-dark:hover{background:#000}
+
+  /* ---------- header ---------- */
+  header.site{
+    position:sticky; top:env(safe-area-inset-top,0px); z-index:50;
+    background:rgba(18,20,28,.86); backdrop-filter:blur(10px) saturate(140%);
+    border-bottom:1px solid var(--ink-line);
+  }
+  header.site .row{display:flex; align-items:center; justify-content:space-between; gap:16px; padding-block:14px}
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--serif); font-weight:600; font-size:19px; color:var(--ink-text); text-decoration:none}
+  .brand .mark{flex:none}
+  nav.links{display:none; gap:28px; font-size:14px; font-weight:500; color:var(--ink-muted)}
+  nav.links a{text-decoration:none}
+  nav.links a:hover{color:var(--honey)}
+  @media (min-width:820px){ nav.links{display:flex} }
+
+  /* ---------- hero ---------- */
+  .hero-grid{display:grid; grid-template-columns:1fr; gap:48px; align-items:center}
+  @media (min-width:960px){ .hero-grid{grid-template-columns:1.05fr 1fr; gap:40px} }
+  .hero-copy{display:flex; flex-direction:column; gap:22px}
+  .hero-ctas{display:flex; flex-wrap:wrap; gap:12px; margin-top:6px}
+  .trust-line{display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink-muted); margin-top:10px}
+  .trust-line svg{flex:none}
+
+  /* ---------- browser mockup shell ---------- */
+  .browser{
+    background:#fff; border-radius:14px; overflow:hidden;
+    box-shadow:0 30px 70px -25px rgba(0,0,0,.55), 0 2px 0 rgba(255,255,255,.04) inset;
+    border:1px solid rgba(255,255,255,.08);
+  }
+  .browser .chrome{
+    display:flex; align-items:center; gap:10px; padding:10px 14px;
+    background:#eceff3; border-bottom:1px solid #dde1e8;
+  }
+  .browser .dots{display:flex; gap:6px}
+  .browser .dots span{width:9px; height:9px; border-radius:50%; display:block}
+  .browser .dots span:nth-child(1){background:#ec6a5e}
+  .browser .dots span:nth-child(2){background:#f4bf4f}
+  .browser .dots span:nth-child(3){background:#61c454}
+  .browser .addr{
+    flex:1; background:#fff; border:1px solid #dde1e8; border-radius:6px;
+    font-family:var(--mono); font-size:11px; color:#6b7280; padding:4px 10px;
+  }
+  .app{background:#f8f9fb; color:#111827; font-family:var(--sans); padding:0}
+
+  /* dashbee app chrome (mirrors the real app header) */
+  .app-nav{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; background:#fff; border-bottom:1px solid #e5e7eb; padding:12px 18px}
+  .app-nav .left{display:flex; align-items:center; gap:18px; flex-wrap:wrap}
+  .app-logo{font-family:var(--serif); font-weight:600; font-size:16px; color:#111827}
+  .app-links{display:flex; gap:16px; font-size:12.5px; color:#6b7280; font-weight:500}
+  .app-links .on{color:#111827; font-weight:700}
+  .app-user{display:flex; align-items:center; gap:8px; font-size:12.5px; color:#6b7280}
+  .role-chip{background:var(--blue-soft); color:var(--blue); font-size:11px; font-weight:700; padding:2px 9px; border-radius:999px}
+
+  .app-body{padding:18px}
+  .app-h1row{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:14px}
+  .app-h1{font-family:var(--sans); font-size:16px; font-weight:700; color:#111827}
+  .pill-group{display:flex; gap:6px}
+  .pill{font-size:11px; font-weight:600; color:#6b7280; background:#fff; border:1px solid #e5e7eb; padding:5px 10px; border-radius:7px}
+  .pill.on{background:#111827; color:#fff; border-color:#111827}
+  .refresh{font-size:11px; font-weight:700; color:#374151; background:#fff; border:1px solid #e5e7eb; padding:5px 12px; border-radius:7px; display:inline-flex; align-items:center; gap:5px}
+
+  .kpi-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px}
+  @media (min-width:520px){ .kpi-grid{grid-template-columns:repeat(4,1fr)} }
+  .kpi{background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:12px 14px}
+  .kpi .lbl{font-size:10.5px; color:#9ca3af; font-weight:600; text-transform:uppercase; letter-spacing:.04em}
+  .kpi .val{font-family:var(--mono); font-size:17px; font-weight:600; color:#111827; margin-top:5px}
+  .badge{display:inline-flex; align-items:center; gap:3px; font-size:10.5px; font-weight:700; padding:2px 6px; border-radius:5px; margin-top:6px}
+  .badge.good{background:var(--good-soft); color:var(--good)}
+  .badge.warn{background:var(--warn-soft); color:var(--warn)}
+
+  .card-white{background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:14px}
+  .card-title{font-size:12.5px; font-weight:700; color:#111827; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center}
+  .sample-tag{font-size:9.5px; font-weight:600; color:#9ca3af; text-transform:uppercase; letter-spacing:.04em}
+
+  table.mini{width:100%; border-collapse:collapse; font-size:11.5px}
+  table.mini th{text-align:left; color:#9ca3af; font-weight:600; font-size:10px; text-transform:uppercase; letter-spacing:.03em; padding:0 8px 6px 0; border-bottom:1px solid #f0f1f3}
+  table.mini td{padding:7px 8px 7px 0; border-bottom:1px solid #f5f6f8; color:#374151}
+  table.mini td.num{text-align:right; font-family:var(--mono)}
+  .status{font-size:10px; font-weight:700; padding:2px 7px; border-radius:999px}
+  .status.paid{background:var(--good-soft); color:var(--good)}
+  .status.pending{background:var(--warn-soft); color:var(--warn)}
+
+  .two-col{display:grid; grid-template-columns:1fr; gap:10px; margin-top:10px}
+  @media (min-width:640px){ .two-col{grid-template-columns:1fr 1fr} }
+
+  .role-select{font-size:10.5px; font-weight:600; border:1px solid #e5e7eb; border-radius:6px; padding:2px 8px; color:#374151; background:#fff}
+
+  /* ---------- feature grid ---------- */
+  .feat-grid{display:grid; grid-template-columns:1fr; gap:16px; margin-top:44px}
+  @media (min-width:720px){ .feat-grid{grid-template-columns:1fr 1fr} }
+  .feat-card{
+    background:var(--ink-2); border:1px solid var(--ink-line); border-radius:16px; padding:26px;
+    display:flex; flex-direction:column; gap:12px;
+  }
+  .feat-icon{width:38px; height:38px; border-radius:10px; background:rgba(242,165,60,.14); display:flex; align-items:center; justify-content:center; color:var(--honey)}
+  .feat-card h3{color:var(--ink-text)}
+  .feat-card p{color:var(--ink-muted); font-size:14.5px; line-height:1.55}
+
+  /* ---------- pain grid ---------- */
+  .pain-grid{display:grid; grid-template-columns:1fr; gap:14px; margin-top:44px}
+  @media (min-width:720px){ .pain-grid{grid-template-columns:repeat(2,1fr)} }
+  .pain-card{background:#fff; border:1px solid var(--paper-line); border-radius:14px; padding:22px; display:flex; gap:14px}
+  .pain-num{font-family:var(--mono); font-weight:600; font-size:13px; color:var(--honey-deep); flex:none; width:26px}
+  .pain-card p{font-size:14.5px; line-height:1.6; color:var(--paper-text)}
+  .pain-card .src{display:block; margin-top:8px; font-size:11.5px; color:var(--paper-muted)}
+
+  /* ---------- comparison ---------- */
+  .compare{overflow-x:auto; margin-top:40px; border:1px solid var(--paper-line); border-radius:14px; background:#fff}
+  table.compare-table{width:100%; border-collapse:collapse; min-width:760px; font-size:14px}
+  table.compare-table th,table.compare-table td{padding:14px 18px; text-align:left; border-bottom:1px solid var(--paper-line)}
+  table.compare-table thead th{font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--paper-muted); font-weight:700; background:var(--paper-2)}
+  table.compare-table tbody tr:last-child td{border-bottom:none}
+  table.compare-table td.num{font-family:var(--mono)}
+  .col-dashbee{background:#fff8ec}
+  th.col-dashbee, td.col-dashbee{position:relative}
+  .win{color:var(--good); font-weight:700}
+  .lose{color:#9a3b3b}
+
+  /* ---------- pricing ---------- */
+  .price-card{
+    background:var(--ink-2); border:1px solid var(--ink-line); border-radius:20px; padding:36px;
+    display:grid; grid-template-columns:1fr; gap:28px; margin-top:44px;
+  }
+  @media (min-width:860px){ .price-card{grid-template-columns:1.1fr 1fr; padding:44px} }
+  .price-tag{font-family:var(--mono); font-size:clamp(32px,4.4vw,46px); font-weight:600; color:var(--honey)}
+  .includes{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:11px}
+  .includes li{display:flex; gap:10px; font-size:14.5px; color:var(--ink-text); align-items:flex-start}
+  .includes svg{flex:none; margin-top:2px; color:var(--honey)}
+  .dp-note{background:var(--ink); border:1px dashed var(--ink-line); border-radius:10px; padding:14px 16px; font-size:13.5px; color:var(--ink-muted); margin-top:6px}
+
+  /* ---------- process ---------- */
+  .steps{display:grid; grid-template-columns:1fr; gap:0; margin-top:44px; border-top:1px solid var(--ink-line)}
+  @media (min-width:760px){ .steps{grid-template-columns:repeat(4,1fr)} }
+  .step{padding:24px 22px; border-bottom:1px solid var(--ink-line); border-right:1px solid var(--ink-line)}
+  @media (min-width:760px){ .step:nth-child(4){border-right:none} }
+  .step .n{font-family:var(--mono); color:var(--honey); font-weight:600; font-size:13px}
+  .step h3{margin-top:10px; font-size:16px; color:var(--ink-text)}
+  .step p{margin-top:8px; font-size:13.5px; color:var(--ink-muted); line-height:1.55}
+
+  /* ---------- faq ---------- */
+  .faq{max-width:760px; margin-top:40px; display:flex; flex-direction:column; gap:0; border-top:1px solid var(--paper-line)}
+  details{border-bottom:1px solid var(--paper-line); padding-block:18px}
+  summary{cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:center; gap:16px; font-weight:600; font-size:16px}
+  summary::-webkit-details-marker{display:none}
+  summary .plus{font-family:var(--mono); font-size:20px; color:var(--honey-deep); flex:none; transition:transform .2s ease}
+  details[open] summary .plus{transform:rotate(45deg)}
+  details p{margin-top:12px; font-size:14.5px; line-height:1.65; color:var(--paper-muted); max-width:65ch}
+
+  /* ---------- footer / final cta ---------- */
+  .final-grid{display:flex; flex-direction:column; gap:26px; align-items:flex-start}
+  footer.site{border-top:1px solid var(--ink-line); padding-block:36px}
+  .foot-row{display:flex; flex-wrap:wrap; justify-content:space-between; gap:18px; align-items:center; font-size:13px; color:var(--ink-muted)}
+  .foot-links{display:flex; gap:22px}
+  .foot-links a{text-decoration:none}
+  .foot-links a:hover{color:var(--honey)}
+
+  .kicker-strip{display:flex; flex-wrap:wrap; gap:10px; margin-top:26px}
+  .kicker{font-size:12px; font-weight:600; color:var(--ink-muted); border:1px solid var(--ink-line); border-radius:999px; padding:6px 13px; display:inline-flex; align-items:center; gap:7px}
+  .kicker svg{color:var(--honey)}
+</style>
+
+<header class="site">
+  <div class="wrap row">
+    <a class="brand" href="#top">
+      <svg class="mark" width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <path d="M14 1.6 25.4 8v12L14 26.4 2.6 20V8Z" stroke="#f2a53c" stroke-width="1.6"/>
+        <path d="M9 17.5 9 12.5 12 15 15 10.5 15 17.5" stroke="#f2a53c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      Dashbee
+    </a>
+    <nav class="links">
+      <a href="#problem">Problem</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-honey" href="#contact">Book a demo</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="bg-ink comb">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow"><span class="dot"></span>A custom dashboard for small businesses</span>
+          <h1>One dashboard for your whole business. Pay once, own it forever.</h1>
+          <p class="lede">Sales live in one spreadsheet, inventory in another, purchases scattered across email threads. Every month you rebuild the picture by hand just to know if you made money. Dashbee pulls it all into one dashboard that updates itself from the Google Sheet you already use — no migration, no subscription that climbs every year you grow.</p>
+          <div class="hero-ctas">
+            <a class="btn btn-honey" href="#contact">Book a free demo</a>
+            <a class="btn btn-ghost-dark" href="#features">See how it works ↓</a>
+          </div>
+          <div class="trust-line">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8.5 6 12l8-8" stroke="#f2a53c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Built on Next.js + Supabase — the same architecture behind real SaaS products, not a page-builder template.
+          </div>
+        </div>
+
+        <!-- Overview mockup -->
+        <div class="browser">
+          <div class="chrome">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <div class="addr">app.dashbee.io/overview</div>
+          </div>
+          <div class="app">
+            <div class="app-nav">
+              <div class="left">
+                <span class="app-logo">Dashbee</span>
+                <div class="app-links">
+                  <span class="on">Overview</span><span>Sales</span><span>Purchases</span><span>Admin</span>
+                </div>
+              </div>
+              <div class="app-user">Sam Carter <span class="role-chip">owner</span></div>
+            </div>
+            <div class="app-body">
+              <div class="app-h1row">
+                <span class="app-h1">Overview</span>
+                <div style="display:flex; gap:8px; align-items:center">
+                  <div class="pill-group">
+                    <span class="pill">7d</span><span class="pill on">30d</span><span class="pill">90d</span>
+                  </div>
+                  <span class="refresh">⟳ Refresh</span>
+                </div>
+              </div>
+
+              <div class="kpi-grid">
+                <div class="kpi">
+                  <div class="lbl">Revenue, 30d</div>
+                  <div class="val">$41,280</div>
+                  <span class="badge good">▲ 12.4%</span>
+                </div>
+                <div class="kpi">
+                  <div class="lbl">Orders</div>
+                  <div class="val">342</div>
+                  <span class="badge good">▲ 8.1%</span>
+                </div>
+                <div class="kpi">
+                  <div class="lbl">Gross margin</div>
+                  <div class="val">31.2%</div>
+                  <span class="badge good">▲ 2.0%</span>
+                </div>
+                <div class="kpi">
+                  <div class="lbl">Low stock</div>
+                  <div class="val">6 items</div>
+                  <span class="badge warn">● Review</span>
+                </div>
+              </div>
+
+              <div class="card-white" style="margin-bottom:10px">
+                <div class="card-title"><span>Daily revenue</span><span class="sample-tag">Sample data</span></div>
+                <svg viewBox="0 0 560 130" width="100%" height="120" preserveAspectRatio="none" role="img" aria-label="Seven-day daily revenue chart trending up from about 4,000 to 6,400 dollars">
+                  <line x1="0" y1="20" x2="560" y2="20" stroke="#f0f1f3" stroke-width="1"/>
+                  <line x1="0" y1="60" x2="560" y2="60" stroke="#f0f1f3" stroke-width="1"/>
+                  <line x1="0" y1="100" x2="560" y2="100" stroke="#f0f1f3" stroke-width="1"/>
+                  <polygon points="10,84 90,68 170,78 250,44 330,56 410,20 490,32 490,120 10,120" fill="#2563eb" opacity="0.09"/>
+                  <polyline points="10,84 90,68 170,78 250,44 330,56 410,20 490,32" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <g fill="#2563eb"><circle cx="10" cy="84" r="3"/><circle cx="90" cy="68" r="3"/><circle cx="170" cy="78" r="3"/><circle cx="250" cy="44" r="3"/><circle cx="330" cy="56" r="3"/><circle cx="410" cy="20" r="3"/><circle cx="490" cy="32" r="3"/></g>
+                  <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#9ca3af">
+                    <text x="10" y="128">Mon</text><text x="88" y="128">Tue</text><text x="164" y="128">Wed</text><text x="246" y="128">Thu</text><text x="326" y="128">Fri</text><text x="404" y="128">Sat</text><text x="482" y="128">Sun</text>
+                  </g>
+                </svg>
+              </div>
+
+              <div class="card-white" style="margin-bottom:10px">
+                <div class="card-title"><span>Recent orders</span><span class="sample-tag">Sample data</span></div>
+                <table class="mini">
+                  <thead><tr><th>Order</th><th>Item</th><th>Date</th><th style="text-align:right">Amount</th><th>Status</th></tr></thead>
+                  <tbody>
+                    <tr><td>INV-1042</td><td>Roast Coffee 250g</td><td>Sep 17</td><td class="num">$29.00</td><td><span class="status paid">Paid</span></td></tr>
+                    <tr><td>INV-1041</td><td>Gift Bundle B</td><td>Sep 17</td><td class="num">$81.00</td><td><span class="status paid">Paid</span></td></tr>
+                    <tr><td>INV-1040</td><td>Bottle Packaging 500ml</td><td>Sep 16</td><td class="num">$14.00</td><td><span class="status pending">Pending</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="two-col">
+                <div class="card-white">
+                  <div class="card-title"><span>Purchases, this month</span><span class="sample-tag">Sample data</span></div>
+                  <div style="font-family:var(--mono); font-size:15px; font-weight:600">$4,030</div>
+                  <div style="font-size:11px; color:#9ca3af; margin-top:4px">12 orders across 4 suppliers</div>
+                </div>
+                <div class="card-white">
+                  <div class="card-title"><span>Stock count</span><span class="sample-tag">Sample data</span></div>
+                  <table class="mini">
+                    <tbody>
+                      <tr><td>Roast Coffee 250g</td><td class="num" style="color:var(--warn)">8 (low)</td></tr>
+                      <tr><td>Bottle Packaging 500ml</td><td class="num">140</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /mockup -->
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PAIN ============ -->
+  <section id="problem" class="bg-paper">
+    <div class="wrap">
+      <span class="eyebrow"><span class="dot"></span>If this sounds familiar</span>
+      <h2 style="margin-top:14px">You're not alone — here's what most small business owners deal with before Dashbee.</h2>
+
+      <div class="pain-grid">
+        <div class="pain-card">
+          <span class="pain-num">01</span>
+          <p>84.8% of businesses still track inventory in spreadsheets, and 90% of organizations rely on spreadsheets for financial operations — not because dashboards don't exist, but because the ones on the market weren't built for how a small team actually works.
+            <span class="src">Source: inFlow State of Inventory Management 2026; AutoRek spreadsheet survey, 2024</span>
+          </p>
+        </div>
+        <div class="pain-card">
+          <span class="pain-num">02</span>
+          <p>Popular dashboard tools run $79–$399 a month — and that's before per-user seats, per-data-source fees, or the extra connectors you discover you need after signing up.
+            <span class="src">Source: Databox, Klipfolio, Geckoboard public pricing, Sep 2026</span>
+          </p>
+        </div>
+        <div class="pain-card">
+          <span class="pain-num">03</span>
+          <p>Some tools charge per viewer, not just per editor — so a "cheap" plan turns into a real monthly bill once everyone who needs to see a report is counted.
+            <span class="src">Source: Power BI Pro licensing comparison, 2026</span>
+          </p>
+        </div>
+        <div class="pain-card">
+          <span class="pain-num">04</span>
+          <p>Hire an agency for a fully custom dashboard instead, and typical quotes run from $5,000 well into the tens of thousands — priced for a company with a data team, not a five-person business that just wants to see today's numbers.
+            <span class="src">Source: Freelance/agency custom dashboard pricing research, 2026</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEATURES / MECHANISM ============ -->
+  <section id="features" class="bg-ink">
+    <div class="wrap">
+      <span class="eyebrow"><span class="dot"></span>Why custom, not off-the-shelf</span>
+      <h2 style="margin-top:14px; max-width:26ch">Dashbee is built around the data you already have — not the other way around.</h2>
+      <p class="lede" style="margin-top:14px">No painful data migration, and no modules you'll never use. Dashbee reads from the source your team already relies on, then puts it all in one view you can read in seconds.</p>
+
+      <div class="feat-grid">
+        <div class="feat-card">
+          <div class="feat-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 14V9M9 14V4M16 14v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Real-time overview, one screen</h3>
+          <p>Revenue, order count, margin, and low-stock alerts show up as KPI cards with a trend chart — filter by 7, 30, or 90 days and refresh with one click, so you can make a call today instead of waiting for the end-of-month rollup.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="12" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M2 7h14" stroke="currentColor" stroke-width="1.6"/></svg>
+          </div>
+          <h3>Sales &amp; purchases, properly tracked</h3>
+          <p>Add, search, edit, and delete sales and purchase records straight from the dashboard — no spreadsheet formulas that break the moment someone fat-fingers a cell, so your records stay intact exactly when you need them most.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2 3 5v4c0 4 2.7 6.6 6 7.5 3.3-.9 6-3.5 6-7.5V5L9 2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>Secure login, role-based access</h3>
+          <p>Sign in with Google or email behind an allowlist — only the addresses you approve can get in. Owner, admin, and staff roles each get their own access boundary, so staff can't open financial data that isn't theirs to see.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="10" y="2" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="2" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="10" y="10" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.6"/></svg>
+          </div>
+          <h3>Stock counts that stay connected</h3>
+          <p>Inventory is linked to sales and purchases, so you know exactly what's running low without counting shelves by hand or cross-checking three different sheets.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9h12M9 3v12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Synced from the Google Sheet you use today</h3>
+          <p>Dashbee's data source is the spreadsheet your team already updates daily — not a new system that forces you to re-enter months of history from scratch.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="5" y="1.5" width="8" height="15" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 14.2h2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Works from your phone, any time</h3>
+          <p>The layout adapts automatically to a small screen, so you can check today's numbers between meetings without opening a laptop.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ADMIN mini mockup ============ -->
+  <section class="bg-ink2">
+    <div class="wrap" style="display:grid; grid-template-columns:1fr; gap:22px">
+      <div style="max-width:56ch">
+        <span class="eyebrow"><span class="dot"></span>Full control for the owner</span>
+        <h2 style="margin-top:14px; font-size:clamp(22px,3vw,30px)">You decide who sees what.</h2>
+      </div>
+      <div class="two-col" style="grid-template-columns:1fr; margin-top:6px">
+        <div class="browser" style="max-width:640px">
+          <div class="chrome"><div class="dots"><span></span><span></span><span></span></div><div class="addr">app.dashbee.io/admin</div></div>
+          <div class="app">
+            <div class="app-nav">
+              <div class="left"><span class="app-logo">Dashbee</span><div class="app-links"><span>Overview</span><span>Sales</span><span>Purchases</span><span class="on">Admin</span></div></div>
+              <div class="app-user">Sam Carter <span class="role-chip">owner</span></div>
+            </div>
+            <div class="app-body">
+              <div class="app-h1row"><span class="app-h1">Admin</span></div>
+              <div class="card-white" style="margin-bottom:10px">
+                <div class="card-title"><span>Users &amp; roles</span><span class="sample-tag">Sample data</span></div>
+                <table class="mini">
+                  <thead><tr><th>Name</th><th>Email</th><th>Role</th></tr></thead>
+                  <tbody>
+                    <tr><td>Sam Carter</td><td>sam@myshop.com</td><td><select class="role-select"><option>owner</option></select></td></tr>
+                    <tr><td>Priya Nair</td><td>priya@myshop.com</td><td><select class="role-select"><option>admin</option></select></td></tr>
+                    <tr><td>Jordan Lee</td><td>jordan@myshop.com</td><td><select class="role-select"><option>staff</option></select></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-white">
+                <div class="card-title"><span>Business info</span></div>
+                <div style="font-size:11.5px; color:#6b7280; line-height:1.7">Business name, category, and address — used across every report in the dashboard.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COMPARISON / PRICING ============ -->
+  <section id="pricing" class="bg-paper">
+    <div class="wrap">
+      <span class="eyebrow"><span class="dot"></span>Pay once vs. pay forever</span>
+      <h2 style="margin-top:14px; max-width:26ch">Why paying once beats a subscription that never ends — or an agency quote that never ends either.</h2>
+      <p class="lede" style="margin-top:14px">Dashboard SaaS tools are genuinely useful — but the bill keeps running, and grows every time you add a user, a data source, or a seat. Go custom with a traditional agency instead, and you're often looking at an enterprise-sized invoice for a five-person business. Dashbee is paid once, up front, and it's yours.</p>
+
+      <div class="compare">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Comparison</th>
+              <th>Typical SaaS subscription</th>
+              <th>Custom agency build</th>
+              <th class="col-dashbee">Dashbee</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Cost model</td>
+              <td>$79–$399/month, often per user or per data source</td>
+              <td>$5,000–$70,000+ one-time</td>
+              <td class="col-dashbee win">$645 one-time</td>
+            </tr>
+            <tr>
+              <td>Year two and beyond</td>
+              <td class="lose">Keeps running, usually goes up</td>
+              <td>$0, but scope changes cost extra</td>
+              <td class="col-dashbee win">$0 — it's already yours</td>
+            </tr>
+            <tr>
+              <td>Built for</td>
+              <td>Analysts and teams, generic templates</td>
+              <td>Enterprises with a data team</td>
+              <td class="col-dashbee win">A small business owner who wants clear numbers</td>
+            </tr>
+            <tr>
+              <td>Time to full use</td>
+              <td>Weeks of setup and team training</td>
+              <td>4–12+ weeks</td>
+              <td class="col-dashbee win">5–7 business days</td>
+            </tr>
+            <tr>
+              <td>Starting data source</td>
+              <td>Data migration / re-entry</td>
+              <td>Data migration / re-entry</td>
+              <td class="col-dashbee win">The Google Sheet you already use</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:12px; color:var(--paper-muted); margin-top:10px">*Estimates based on public pricing for popular small-business dashboard tools and publicly reported freelance/agency dashboard project rates, as of September 2026. Prices change — check current pricing directly with each provider before deciding.</p>
+
+      <div class="price-card" style="margin-top:56px">
+        <div>
+          <span class="eyebrow" style="color:var(--honey)"><span class="dot"></span>Flagship package</span>
+          <h3 style="font-size:24px; font-family:var(--serif); margin-top:10px; color:var(--ink-text)">Simple Custom Dashboard</h3>
+          <div style="margin-top:14px"><span class="price-tag">$645</span></div>
+          <p style="color:var(--ink-muted); margin-top:10px; font-size:14.5px; line-height:1.6">Paid once, delivered in 5–7 business days. "Simple" means it isn't over-engineered — it still covers everything your business needs for standard reporting.</p>
+          <div class="dp-note">50% deposit to start the build. Once that clears, you'll see your dashboard's skeleton for review — before the remaining balance is due.</div>
+        </div>
+        <ul class="includes">
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8.5 6 12l8-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Overview dashboard: revenue, orders, margin, stock</li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8.5 6 12l8-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Sales &amp; purchases module (add/search/edit/delete)</li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8.5 6 12l8-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Stock count linked automatically</li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8.5 6 12l8-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Google + email login, allowlisted access</li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8.5 6 12l8-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Role management: owner, admin, staff</li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8.5 6 12l8-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Synced from your existing Google Sheet</li>
+          <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8.5 6 12l8-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Responsive design, comfortable on mobile</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROCESS / TRUST ============ -->
+  <section class="bg-ink">
+    <div class="wrap">
+      <span class="eyebrow"><span class="dot"></span>No public portfolio yet? Here's what replaces it</span>
+      <h2 style="margin-top:14px; max-width:26ch">Full transparency from the first conversation to a finished dashboard.</h2>
+      <p class="lede" style="margin-top:14px">Because every dashboard is built custom, you see the process as it happens — not just a finished product handed over at the end.</p>
+      <div class="steps">
+        <div class="step"><div class="n">01</div><h3>Discovery call</h3><p>Walk us through how sales, purchases, and stock tracking work in your business today — free, no commitment.</p></div>
+        <div class="step"><div class="n">02</div><h3>50% deposit &amp; build starts</h3><p>Once we agree on scope, we start building around your actual data and workflow.</p></div>
+        <div class="step"><div class="n">03</div><h3>Review the skeleton</h3><p>As soon as the deposit clears, you can see your dashboard's skeleton to guide further customization.</p></div>
+        <div class="step"><div class="n">04</div><h3>Delivered in 5–7 days</h3><p>Final dashboard is handed over, final payment is settled, and we help your team get comfortable using it.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section id="faq" class="bg-paper">
+    <div class="wrap">
+      <span class="eyebrow"><span class="dot"></span>Frequently asked questions</span>
+      <h2 style="margin-top:14px">Before you ask, here are the answers.</h2>
+      <div class="faq">
+        <details open>
+          <summary>I'm not very technical — is this hard to use? <span class="plus">+</span></summary>
+          <p>No. The interface is deliberately simple — number cards, charts, and tables you can read without training. If you're already comfortable with Google Sheets, you're already ready for Dashbee.</p>
+        </details>
+        <details>
+          <summary>Is my Google Sheet data safe once it's connected? <span class="plus">+</span></summary>
+          <p>Yes. The connection uses a dedicated service account that only has access to the sheet you share with it, and every table in the database is protected by row-level access rules, so only authorized users can see the data.</p>
+        </details>
+        <details>
+          <summary>If my business grows, can features be added later? <span class="plus">+</span></summary>
+          <p>Yes. "Simple" describes the starting scope, not a permanent limit — additional modules can be scoped and built separately once you need them.</p>
+        </details>
+        <details>
+          <summary>Why go custom instead of an existing tool? <span class="plus">+</span></summary>
+          <p>Off-the-shelf tools have to serve thousands of different businesses at once, so it's normal to end up paying for features you'll never touch, plus a bill that never stops. Dashbee only includes what your business actually needs, and it's paid for up front.</p>
+        </details>
+        <details>
+          <summary>What if I need help after the dashboard is delivered? <span class="plus">+</span></summary>
+          <p>You get hands-on support during the first stretch of real use, to make sure your team is comfortable with it. Changes or new features beyond that are scoped as separate, additional work.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section id="contact" class="bg-ink comb">
+    <div class="wrap">
+      <div class="final-grid">
+        <span class="eyebrow"><span class="dot"></span>Start with one short conversation</span>
+        <h2 style="max-width:20ch">Stop rebuilding your reports by hand. Start today.</h2>
+        <p class="lede">Tell us how your business runs, and see what a dashboard built around your own numbers would actually look like — before you decide anything.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-honey" href="mailto:dashbee@adihara.com?subject=Dashbee%20demo%20request&body=Hi%20Dashbee%20team%2C%20I%27d%20like%20to%20talk%20about%20a%20custom%20dashboard%20for%20my%20business.">Book a free demo</a>
+          <a class="btn btn-ghost-dark" href="#pricing">See package details</a>
+        </div>
+        <div class="kicker-strip">
+          <span class="kicker"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 8.5 6 12l8-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Free initial consultation</span>
+          <span class="kicker"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 8.5 6 12l8-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>50% deposit, rest after you see the skeleton</span>
+          <span class="kicker"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 8.5 6 12l8-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Delivered in 5–7 business days</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site bg-ink">
+    <div class="wrap foot-row">
+      <span>Dashbee by <strong>Adihara Solutions</strong> — 2026</span>
+      <div class="foot-links">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <a href="mailto:dashbee@adihara.com">dashbee@adihara.com</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
