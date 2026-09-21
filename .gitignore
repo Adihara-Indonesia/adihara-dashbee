@@ -45,3 +45,7 @@ google-credentials*.json
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# localhost
+design-reference
+.vscode
