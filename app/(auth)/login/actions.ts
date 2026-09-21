@@ -12,7 +12,10 @@ export type LoginFormState = {
 
 export async function signInWithGoogleAction() {
   const supabase = await createClient();
-  const origin = (await headers()).get("origin");
+  // Prefer the trusted SITE_URL over the request's Origin header — behind a
+  // reverse proxy (Coolify/Traefik) the request-derived origin can resolve
+  // to the container's internal address instead of the public domain.
+  const origin = process.env.SITE_URL ?? (await headers()).get("origin");
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",

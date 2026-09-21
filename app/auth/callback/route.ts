@@ -5,8 +5,13 @@ import { verifyWhitelistedUser } from "@/lib/auth/verify-whitelist";
 // Google redirects here (via Supabase's own /auth/v1/callback) with a
 // one-time `code` to exchange for a session.
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams, origin: requestOrigin } = new URL(request.url);
   const code = searchParams.get("code");
+  // Prefer the trusted SITE_URL over the request's own origin — behind a
+  // reverse proxy (Coolify/Traefik) request.url can resolve to the
+  // container's internal address (e.g. http://0.0.0.0:3000) instead of the
+  // public domain, sending the browser to an unreachable URL.
+  const origin = process.env.SITE_URL ?? requestOrigin;
 
   if (code) {
     const supabase = await createClient();
